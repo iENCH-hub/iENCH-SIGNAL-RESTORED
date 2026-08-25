@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>iENCH // NODE 004</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #000;
+    color: #b8d3bf;
+    font-family: "Courier New", monospace;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+#intro {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    background: #000;
+
+    z-index: 100;
+
+    transition:
+        opacity 2s ease,
+        visibility 2s ease;
+}
+
+#intro.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+/* =========================================================
+   SYMBOLE
+========================================================= */
+
+.symbol {
+    position: relative;
+
+    width: 160px;
+    height: 160px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 35px;
+}
+
+
+/* cercle extérieur */
+
+.symbol::before {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    border: 1px solid rgba(184,211,191,0.35);
+
+    border-radius: 50%;
+
+    animation:
+        rotate 14s linear infinite;
+}
+
+
+/* cercle intérieur */
+
+.symbol::after {
+    content: "";
+
+    position: absolute;
+
+    width: 105px;
+    height: 105px;
+
+    border: 1px dashed rgba(184,211,191,0.35);
+
+    border-radius: 50%;
+
+    animation:
+        rotateReverse 9s linear infinite;
+}
+
+
+/* symbole central */
+
+.symbol-main {
+    position: relative;
+
+    z-index: 2;
+
+    font-size: 52px;
+
+    color: #dce8df;
+
+    animation:
+        pulse 3s ease-in-out infinite;
+
+    text-shadow:
+        0 0 20px rgba(184,211,191,0.45);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes rotate {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+@keyframes rotateReverse {
+
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: .55;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================================================
+   IENCH
+========================================================= */
+
+.logo {
+    font-family: "DejaVu Sans Light", monospace;
+
+    font-size: 42px;
+
+    font-weight: 400;
+
+    letter-spacing: 0.25em;
+
+    margin-left: 0.25em;
+
+    color: #dce8df;
+
+    opacity: 0;
+
+    animation:
+        appear 1s ease forwards;
+
+    animation-delay: .5s;
+}
+
+
+.subtitle {
+
+    margin-top: 12px;
+
+    font-size: 11px;
+
+    letter-spacing: 0.4em;
+
+    color: #53665a;
+
+    opacity: 0;
+
+    animation:
+        appear 2s ease forwards;
+
+    animation-delay: 1.8s;
+}
+
+
+@keyframes appear {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================================================
+   TEXTE ETAT
+========================================================= */
+
+.status {
+
+    margin-top: 55px;
+
+    min-height: 18px;
+
+    font-size: 12px;
+
+    letter-spacing: 0.2em;
+
+    color: #9eb5a4;
+}
+
+
+.info {
+
+    margin-top: 12px;
+
+    min-height: 16px;
+
+    font-size: 10px;
+
+    letter-spacing: 0.2em;
+
+    color: #4e6255;
+}
+
+
+/* =========================================================
+   BARRE
+========================================================= */
+
+.progress-wrapper {
+
+    width: min(500px, 70vw);
+
+    margin-top: 18px;
+
+}
+
+
+.progress {
+
+    width: 100%;
+
+    height: 3px;
+
+    background: #101511;
+
+    overflow: hidden;
+
+}
+
+
+.progress-fill {
+
+    width: 0%;
+
+    height: 100%;
+
+    background: #b8d3bf;
+
+    box-shadow:
+        0 0 15px rgba(184,211,191,.7);
+
+    transition: width .08s linear;
+}
+
+
+.percent {
+
+    margin-top: 10px;
+
+    font-size: 10px;
+
+    color: #64776a;
+
+}
+
+
+/* =========================================================
+   ARCHIVE
+========================================================= */
+
+#archive {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: #000;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity 2s ease,
+        visibility 2s ease;
+
+    z-index: 10;
+}
+
+
+#archive.show {
+
+    opacity: 1;
+
+    visibility: visible;
+
+}
+
+
+/* =========================================================
+   LECTEUR
+========================================================= */
+
+.player {
+
+    width: min(850px, 85vw);
+
+    text-align: center;
+
+}
+
+
+.player-symbol {
+
+    font-size: 30px;
+
+    margin-bottom: 25px;
+
+    animation:
+        pulse 3s ease-in-out infinite;
+}
+
+
+.player-title {
+
+    font-size: 14px;
+
+    letter-spacing: 0.3em;
+
+    color: #dce8df;
+
+    margin-bottom: 30px;
+}
+
+
+.fake-player {
+
+    border: 1px solid rgba(184,211,191,.2);
+
+    padding: 25px;
+
+}
+
+
+.fake-button {
+
+    width: 55px;
+    height: 55px;
+
+    margin: 0 auto 20px;
+
+    border: 1px solid #64776a;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: #b8d3bf;
+
+    cursor: pointer;
+}
+
+
+.fake-button:hover {
+
+    background: #b8d3bf;
+
+    color: #000;
+
+}
+
+
+.fake-line {
+
+    height: 2px;
+
+    background: #1a211c;
+
+}
+
+
+.fake-line-inner {
+
+    width: 35%;
+
+    height: 100%;
+
+    background: #b8d3bf;
+}
+
+
+.player-info {
+
+    margin-top: 15px;
+
+    font-size: 9px;
+
+    letter-spacing: .2em;
+
+    color: #4e6255;
+
+}
+
+
+/* =========================================================
+   PETITS GLYPHES
+========================================================= */
+
+.glyph {
+
+    position: fixed;
+
+    color: #29382e;
+
+    font-size: 14px;
+
+    opacity: .35;
+
+    animation:
+        float 5s ease-in-out infinite alternate;
+}
+
+
+.g1 {
+    top: 15%;
+    left: 18%;
+}
+
+.g2 {
+    top: 30%;
+    right: 17%;
+}
+
+.g3 {
+    bottom: 20%;
+    left: 20%;
+}
+
+.g4 {
+    bottom: 17%;
+    right: 22%;
+}
+
+
+@keyframes float {
+
+    from {
+        transform: translateY(-8px) rotate(-3deg);
+    }
+
+    to {
+        transform: translateY(8px) rotate(3deg);
+    }
+
+}
+
+
+
+/* =========================================================
+   IENCH PLAYLIST
+========================================================= */
+
+.track-now {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.track-now-number {
+    font-size: 9px;
+    letter-spacing: .18em;
+    color: #4e6255;
+    margin-bottom: 8px;
+}
+
+.track-now-title {
+    font-size: 18px;
+    letter-spacing: .16em;
+    color: #dce8df;
+}
+
+.player-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.player-control {
+    width: 35px;
+    height: 35px;
+    background: transparent;
+    border: 1px solid #33443a;
+    color: #8da695;
+    cursor: pointer;
+    font-family: "Courier New", monospace;
+}
+
+.player-control:hover {
+    background: #b8d3bf;
+    color: #000;
+}
+
+.time-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 9px;
+    color: #53665a;
+    letter-spacing: .1em;
+}
+
+#playlist {
+    margin-top: 24px;
+    max-height: 390px;
+    overflow-y: auto;
+    border-top: 1px solid rgba(184,211,191,.1);
+    scrollbar-width: thin;
+    scrollbar-color: #33443a transparent;
+}
+
+.playlist-item {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(184,211,191,.08);
+    color: #53665a;
+    cursor: pointer;
+    text-align: left;
+    transition: .25s ease;
+}
+
+.playlist-item:hover {
+    background: rgba(184,211,191,.04);
+    color: #9eb5a4;
+}
+
+.playlist-item.active {
+    color: #dce8df;
+    background: rgba(184,211,191,.06);
+}
+
+.playlist-number {
+    font-size: 9px;
+    letter-spacing: .14em;
+}
+
+.playlist-title {
+    font-size: 10px;
+    letter-spacing: .11em;
+}
+
+.playlist-mark {
+    font-size: 9px;
+    opacity: .55;
+}
+
+@media (max-width: 650px) {
+
+    .track-now-title {
+        font-size: 14px;
+    }
+
+    .playlist-item {
+        grid-template-columns: 34px 1fr auto;
+    }
+
+    .playlist-title {
+        font-size: 9px;
+        letter-spacing: .07em;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     GLYPHES
+===================================================== -->
+
+<div class="glyph g1">𐌗</div>
+<div class="glyph g2">◉</div>
+<div class="glyph g3">⋔</div>
+<div class="glyph g4">⟟</div>
+
+
+<!-- =====================================================
+     INTRO
+===================================================== -->
+
+<section id="intro">
+<div class="symbol">
+
+    <img
+        src="ienchlogo.jpg"
+        class="logo-image"
+        alt="iENCH"
+    >
+
+</div>
+
+
+    <div class="logo">
+        iENCH
+    </div>
+
+
+    <div class="subtitle">
+        ARCHIVE NODE 004
+    </div>
+
+
+    <div
+        id="status"
+        class="status">
+        INITIALIZING
+    </div>
+
+
+    <div
+        id="info"
+        class="info">
+        SEARCHING FOR SIGNAL
+    </div>
+
+
+    <div class="progress-wrapper">
+
+        <div class="progress">
+
+            <div
+                id="progressFill"
+                class="progress-fill">
+            </div>
+
+        </div>
+
+        <div
+            id="percent"
+            class="percent">
+            0%
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ARCHIVE
+===================================================== -->
+
+<section id="archive">
+
+    <div class="player">
+
+        <div class="player-symbol">
+            ◉
+        </div>
+
+        <div class="player-title">
+            SIGNAL RESTORED
+        </div>
+
+        <div class="track-now">
+            <div class="track-now-number" id="trackNowNumber">
+                01 / 20
+            </div>
+
+            <div class="track-now-title" id="trackNowTitle">
+                ALL OF YOU_iENCH
+            </div>
+        </div>
+
+        <div class="fake-player">
+
+            <audio
+                id="audioPlayer"
+                preload="metadata">
+            </audio>
+
+            <div class="player-controls">
+
+                <button
+                    class="player-control"
+                    id="prevTrack"
+                    aria-label="Titre précédent">
+                    ◀
+                </button>
+
+                <button
+                    class="fake-button"
+                    id="mainPlay"
+                    aria-label="Lecture pause">
+                    ▶
+                </button>
+
+                <button
+                    class="player-control"
+                    id="nextTrack"
+                    aria-label="Titre suivant">
+                    ▶
+                </button>
+
+            </div>
+
+            <div class="time-row">
+                <span id="currentTime">00:00</span>
+                <span id="duration">00:00</span>
+            </div>
+
+            <div
+                class="fake-line"
+                id="audioSeek">
+
+                <div
+                    class="fake-line-inner"
+                    id="audioProgress">
+                </div>
+
+            </div>
+
+            <div
+                class="playlist"
+                id="playlist">
+            </div>
+
+            <div class="player-info">
+
+                NODE 004 //
+                ARCHIVE AVAILABLE //
+                ORIGIN UNKNOWN
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+
+/* =========================================================
+   SEQUENCE
+========================================================= */
+
+
+const progressFill =
+    document.getElementById("progressFill");
+
+const percent =
+    document.getElementById("percent");
+
+const status =
+    document.getElementById("status");
+
+const info =
+    document.getElementById("info");
+
+const intro =
+    document.getElementById("intro");
+
+const archive =
+    document.getElementById("archive");
+
+
+const stages = [
+
+    {
+        at: 0,
+        status: "INITIALIZING",
+        info: "SEARCHING FOR SIGNAL"
+    },
+
+    {
+        at: 10,
+        status: "SCANNING",
+        info: "NOISE DETECTED"
+    },
+
+    {
+        at: 22,
+        status: "SIGNAL FOUND",
+        info: "UNKNOWN SOURCE"
+    },
+
+    {
+        at: 35,
+        status: "CONNECTING",
+        info: "NODE 004"
+    },
+
+    {
+        at: 48,
+        status: "RECONSTRUCTING",
+        info: "FRAGMENT 01 FOUND"
+    },
+
+    {
+        at: 61,
+        status: "DECODING",
+        info: "LANGUAGE UNKNOWN"
+    },
+
+    {
+        at: 74,
+        status: "RESTORING",
+        info: "MEMORY STRUCTURE STABLE"
+    },
+
+    {
+        at: 87,
+        status: "VERIFYING SIGNAL",
+        info: "INTEGRITY 92.4%"
+    },
+
+    {
+        at: 100,
+        status: "SIGNAL RESTORED",
+        info: "ARCHIVE AVAILABLE"
+    }
+
+];
+
+
+let progress = 0;
+
+
+function updateSequence() {
+
+
+    progress +=
+        Math.random() * 1.4 + 0.4;
+
+
+    if (progress > 100) {
+        progress = 100;
+    }
+
+
+    progressFill.style.width =
+        progress + "%";
+
+
+    percent.textContent =
+        Math.floor(progress) + "%";
+
+
+    let currentStage =
+        stages[0];
+
+
+    for (let i = 0; i < stages.length; i++) {
+
+        if (progress >= stages[i].at) {
+
+            currentStage =
+                stages[i];
+
+        }
+
+    }
+
+
+    status.textContent =
+        currentStage.status;
+
+    info.textContent =
+        currentStage.info;
+
+
+    if (progress >= 100) {
+
+        setTimeout(() => {
+
+            intro.classList.add("hide");
+
+            setTimeout(() => {
+
+                archive.classList.add("show");
+
+                document.body.style.overflow =
+                    "auto";
+
+            }, 1800);
+
+        }, 1000);
+
+        return;
+
+    }
+
+
+    setTimeout(
+        updateSequence,
+        70 + Math.random() * 110
+    );
+
+}
+
+
+setTimeout(
+    updateSequence,
+    1500
+);
+
+
+
+/* =========================================================
+   IENCH AUDIO ARCHIVE
+========================================================= */
+
+const tracks = [
+    {
+        title: "ALL OF YOU_iENCH",
+        file: "audio/ALL OF YOU_iENCH.mp3"
+    },
+    {
+        title: "BLOOD FLOWER_iENCH",
+        file: "audio/BLOOD FLOWER_iENCH.mp3"
+    },
+    {
+        title: "BOOMERANG_iENCH",
+        file: "audio/BOOMERANG_iENCH.mp3"
+    },
+    {
+        title: "CHAOS IN THE REVERIE_iENCH",
+        file: "audio/CHAOS IN THE REVERIE_iENCH.mp3"
+    },
+    {
+        title: "DESERT JOYFULL SPLEEN_iENCH",
+        file: "audio/DESERT JOYFULL SPLEEN_iENCH.mp3"
+    },
+    {
+        title: "DISHUAL_iENCH",
+        file: "audio/DISHUAL_iENCH.mp3"
+    },
+    {
+        title: "FOLLOW ME REMIX_iENCH",
+        file: "audio/FOLLOW ME REMIX_iENCH.mp3"
+    },
+    {
+        title: "GHOST PROTOCOL_iENCH",
+        file: "audio/GHOST PROTOCOL_iENCH.mp3"
+    },
+    {
+        title: "HAÜÜL_iENCH",
+        file: "audio/HAÜÜL_iENCH.mp3"
+    },
+    {
+        title: "IF DRAGONFLIES SPIT FIRE_iENCH",
+        file: "audio/IF DRAGONFLIES SPIT FIRE_iENCH.mp3"
+    },
+    {
+        title: "OMEN NOMENSEYA TOLL_iENCH",
+        file: "audio/OMEN NOMENSEYA TOLL_iENCH.mp3"
+    },
+    {
+        title: "PASSAGE_iENCH",
+        file: "audio/PASSAGE_iENCH.mp3"
+    },
+    {
+        title: "REVERIE IN THE CHAOS_iENCH",
+        file: "audio/REVERIE IN THE CHAOS_iENCH.mp3"
+    },
+    {
+        title: "SKIN_iENCH",
+        file: "audio/SKIN_iENCH.mp3"
+    },
+    {
+        title: "THE TASTE OF YOUR SKIN_iENCH",
+        file: "audio/THE TASTE OF YOUR SKIN_iENCH.mp3"
+    },
+    {
+        title: "THERE ARE NO LOOSERS IN APOCALYPS_iENCH",
+        file: "audio/THERE ARE NO LOOSERS IN APOCALYPS_iENCH.mp3"
+    },
+    {
+        title: "TUUTTUUT",
+        file: "audio/TUUTTUUT.mp3"
+    },
+    {
+        title: "WE ARE TRIBE WE ARE LEGION_iENCH",
+        file: "audio/WE ARE TRIBE WE ARE LEGION_iENCH.mp3"
+    },
+    {
+        title: "YOHOL_iENCH",
+        file: "audio/YOHOL_iENCH.mp3"
+    },
+    {
+        title: "YRINMEYA_iENCH",
+        file: "audio/YRINMEYA_iENCH.mp3"
+    }
+];
+
+const audioPlayer =
+    document.getElementById("audioPlayer");
+
+const mainPlay =
+    document.getElementById("mainPlay");
+
+const prevTrack =
+    document.getElementById("prevTrack");
+
+const nextTrack =
+    document.getElementById("nextTrack");
+
+const playlist =
+    document.getElementById("playlist");
+
+const trackNowNumber =
+    document.getElementById("trackNowNumber");
+
+const trackNowTitle =
+    document.getElementById("trackNowTitle");
+
+const currentTime =
+    document.getElementById("currentTime");
+
+const duration =
+    document.getElementById("duration");
+
+const audioProgress =
+    document.getElementById("audioProgress");
+
+const audioSeek =
+    document.getElementById("audioSeek");
+
+let currentTrack = 0;
+
+function formatTime(seconds) {
+
+    if (!Number.isFinite(seconds)) {
+        return "00:00";
+    }
+
+    const minutes =
+        Math.floor(seconds / 60);
+
+    const secs =
+        Math.floor(seconds % 60);
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(secs).padStart(2, "0")
+    );
+}
+
+function renderPlaylist() {
+
+    playlist.innerHTML = "";
+
+    tracks.forEach((track, index) => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "playlist-item" +
+            (index === currentTrack
+                ? " active"
+                : "");
+
+        item.innerHTML = `
+            <div class="playlist-number">
+                ${String(index + 1).padStart(2, "0")}
+            </div>
+
+            <div class="playlist-title">
+                ${track.title}
+            </div>
+
+            <div class="playlist-mark">
+                ${index === currentTrack ? "◆" : "◇"}
+            </div>
+        `;
+
+        item.addEventListener("click", () => {
+            loadTrack(index, true);
+        });
+
+        playlist.appendChild(item);
+
+    });
+}
+
+function loadTrack(index, autoplay = false) {
+
+    currentTrack =
+        (index + tracks.length) %
+        tracks.length;
+
+    const track =
+        tracks[currentTrack];
+
+    audioPlayer.src =
+        encodeURI(track.file);
+
+    trackNowNumber.textContent =
+        String(currentTrack + 1).padStart(2, "0") +
+        " / " +
+        String(tracks.length).padStart(2, "0");
+
+    trackNowTitle.textContent =
+        track.title;
+
+    currentTime.textContent =
+        "00:00";
+
+    duration.textContent =
+        "00:00";
+
+    audioProgress.style.width =
+        "0%";
+
+    renderPlaylist();
+
+    if (autoplay) {
+
+        audioPlayer.play().catch(() => {});
+
+    }
+}
+
+mainPlay.addEventListener("click", () => {
+
+    if (audioPlayer.paused) {
+
+        audioPlayer.play().catch(() => {});
+
+    } else {
+
+        audioPlayer.pause();
+
+    }
+});
+
+prevTrack.addEventListener("click", () => {
+
+    loadTrack(
+        currentTrack - 1,
+        true
+    );
+
+});
+
+nextTrack.addEventListener("click", () => {
+
+    loadTrack(
+        currentTrack + 1,
+        true
+    );
+
+});
+
+audioPlayer.addEventListener("play", () => {
+
+    mainPlay.textContent = "Ⅱ";
+
+});
+
+audioPlayer.addEventListener("pause", () => {
+
+    mainPlay.textContent = "▶";
+
+});
+
+audioPlayer.addEventListener(
+    "loadedmetadata",
+    () => {
+
+        duration.textContent =
+            formatTime(audioPlayer.duration);
+
+    }
+);
+
+audioPlayer.addEventListener(
+    "timeupdate",
+    () => {
+
+        if (!Number.isFinite(
+            audioPlayer.duration
+        )) {
+            return;
+        }
+
+        const ratio =
+            audioPlayer.currentTime /
+            audioPlayer.duration;
+
+        currentTime.textContent =
+            formatTime(
+                audioPlayer.currentTime
+            );
+
+        audioProgress.style.width =
+            (ratio * 100) + "%";
+
+    }
+);
+
+audioPlayer.addEventListener(
+    "ended",
+    () => {
+
+        loadTrack(
+            currentTrack + 1,
+            true
+        );
+
+    }
+);
+
+audioSeek.addEventListener(
+    "click",
+    (event) => {
+
+        if (!Number.isFinite(
+            audioPlayer.duration
+        )) {
+            return;
+        }
+
+        const rect =
+            audioSeek.getBoundingClientRect();
+
+        const position =
+            (
+                event.clientX -
+                rect.left
+            ) / rect.width;
+
+        audioPlayer.currentTime =
+            audioPlayer.duration *
+            position;
+
+    }
+);
+
+loadTrack(0, false);
+
+</script>
+
+</body>
+</html>
