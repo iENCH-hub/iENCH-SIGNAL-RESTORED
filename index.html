@@ -20,13 +20,10 @@ body {
     background: #000;
     color: #b8d3bf;
     font-family: "Courier New", monospace;
-    overflow: hidden;
 }
 
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
 }
 
 
@@ -40,12 +37,10 @@ body {
 
     display: flex;
     flex-direction: column;
-
     justify-content: center;
     align-items: center;
 
     text-align: center;
-
     background: #000;
 
     z-index: 100;
@@ -117,22 +112,23 @@ body {
 }
 
 
-/* symbole central */
+/* logo */
 
-.symbol-main {
+.logo-image {
     position: relative;
 
     z-index: 2;
 
-    font-size: 52px;
+    width: 80px;
+    height: 80px;
 
-    color: #dce8df;
+    object-fit: contain;
 
-    animation:
-        pulse 3s ease-in-out infinite;
+    opacity: .9;
 
-    text-shadow:
-        0 0 20px rgba(184,211,191,0.45);
+    filter:
+        brightness(.9)
+        drop-shadow(0 0 15px rgba(184,211,191,.3));
 }
 
 
@@ -179,9 +175,39 @@ body {
 
 }
 
+@keyframes appear {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+@keyframes scan {
+
+    0% {
+        opacity: .3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: .3;
+    }
+
+}
+
 
 /* =========================================================
-   IENCH
+   LOGO INTRO
 ========================================================= */
 
 .logo {
@@ -225,21 +251,6 @@ body {
 }
 
 
-@keyframes appear {
-
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-}
-
-
 /* =========================================================
    TEXTE ETAT
 ========================================================= */
@@ -273,7 +284,7 @@ body {
 
 
 /* =========================================================
-   BARRE
+   BARRE INTRO
 ========================================================= */
 
 .progress-wrapper {
@@ -281,7 +292,6 @@ body {
     width: min(500px, 70vw);
 
     margin-top: 18px;
-
 }
 
 
@@ -294,7 +304,6 @@ body {
     background: #101511;
 
     overflow: hidden;
-
 }
 
 
@@ -320,7 +329,6 @@ body {
     font-size: 10px;
 
     color: #64776a;
-
 }
 
 
@@ -351,6 +359,10 @@ body {
         visibility 2s ease;
 
     z-index: 10;
+
+    overflow-y: auto;
+
+    padding: 40px 20px;
 }
 
 
@@ -369,23 +381,103 @@ body {
 
 .player {
 
-    width: min(850px, 85vw);
+    width: min(850px, 90vw);
 
     text-align: center;
 
 }
 
 
+/* =========================================================
+   LOGO DU LECTEUR
+========================================================= */
+
 .player-symbol {
 
-    font-size: 30px;
+    position: relative;
 
-    margin-bottom: 25px;
+    width: 130px;
+    height: 130px;
+
+    margin: 0 auto 30px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+
+/* grand cercle */
+
+.player-symbol::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    border:
+        1px solid rgba(184,211,191,.35);
+
+    border-radius: 50%;
+
+    animation:
+        rotate 14s linear infinite;
+}
+
+
+/* petit cercle */
+
+.player-symbol::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 82px;
+    height: 82px;
+
+    border:
+        1px dashed rgba(184,211,191,.35);
+
+    border-radius: 50%;
+
+    animation:
+        rotateReverse 9s linear infinite;
+}
+
+
+/* logo au centre */
+
+.player-logo {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: 55px;
+    height: 55px;
+
+    object-fit: contain;
+
+    opacity: .9;
+
+    filter:
+        brightness(.9)
+        drop-shadow(0 0 15px rgba(184,211,191,.35));
 
     animation:
         pulse 3s ease-in-out infinite;
 }
 
+
+/* =========================================================
+   TITRE
+========================================================= */
 
 .player-title {
 
@@ -395,27 +487,40 @@ body {
 
     color: #dce8df;
 
-    margin-bottom: 30px;
+    margin-bottom: 8px;
 }
 
 
-.fake-player {
+.player-subtitle {
 
-    border: 1px solid rgba(184,211,191,.2);
+    font-size: 9px;
+
+    letter-spacing: .25em;
+
+    color: #4e6255;
+
+    margin-bottom: 28px;
+}
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+.audio-player {
+
+    border:
+        1px solid rgba(184,211,191,.2);
 
     padding: 25px;
-
 }
 
 
-.fake-button {
+/* =========================================================
+   CONTROLES
+========================================================= */
 
-    width: 55px;
-    height: 55px;
-
-    margin: 0 auto 20px;
-
-    border: 1px solid #64776a;
+.controls {
 
     display: flex;
 
@@ -423,43 +528,213 @@ body {
 
     align-items: center;
 
-    color: #b8d3bf;
+    gap: 15px;
 
-    cursor: pointer;
+    margin-bottom: 25px;
 }
 
 
-.fake-button:hover {
+.control-button {
+
+    width: 45px;
+    height: 45px;
+
+    border:
+        1px solid #53665a;
+
+    background: transparent;
+
+    color: #b8d3bf;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition:
+        background .2s,
+        color .2s,
+        border .2s;
+}
+
+
+.control-button:hover {
 
     background: #b8d3bf;
 
     color: #000;
 
+    border-color: #b8d3bf;
 }
 
 
-.fake-line {
+.play-button {
 
-    height: 2px;
+    width: 58px;
+    height: 58px;
 
-    background: #1a211c;
-
+    font-size: 18px;
 }
 
 
-.fake-line-inner {
+/* =========================================================
+   PROGRESSION AUDIO
+========================================================= */
 
-    width: 35%;
+.audio-progress {
+
+    width: 100%;
+
+    height: 3px;
+
+    background: #151c17;
+
+    cursor: pointer;
+
+    position: relative;
+}
+
+
+.audio-progress-fill {
+
+    width: 0%;
 
     height: 100%;
 
     background: #b8d3bf;
+
+    box-shadow:
+        0 0 10px rgba(184,211,191,.5);
 }
 
 
+/* =========================================================
+   TEMPS
+========================================================= */
+
+.time {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 9px;
+
+    font-size: 9px;
+
+    color: #53665a;
+}
+
+
+/* =========================================================
+   LISTE
+========================================================= */
+
+.track-list {
+
+    margin-top: 30px;
+
+    border-top:
+        1px solid rgba(184,211,191,.12);
+}
+
+
+.track {
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 13px 10px;
+
+    border-bottom:
+        1px solid rgba(184,211,191,.08);
+
+    cursor: pointer;
+
+    transition:
+        background .2s,
+        padding-left .2s;
+}
+
+
+.track:hover {
+
+    background:
+        rgba(184,211,191,.05);
+
+    padding-left: 15px;
+}
+
+
+.track-number {
+
+    width: 35px;
+
+    text-align: left;
+
+    font-size: 9px;
+
+    color: #53665a;
+}
+
+
+.track-name {
+
+    flex: 1;
+
+    text-align: left;
+
+    font-size: 10px;
+
+    letter-spacing: .18em;
+
+    color: #82998a;
+}
+
+
+.track.active {
+
+    background:
+        rgba(184,211,191,.07);
+}
+
+
+.track.active .track-name {
+
+    color: #dce8df;
+
+}
+
+
+.track.active .track-number {
+
+    color: #b8d3bf;
+}
+
+
+.track-playing {
+
+    width: 25px;
+
+    text-align: right;
+
+    font-size: 9px;
+
+    color: #b8d3bf;
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
 .player-info {
 
-    margin-top: 15px;
+    margin-top: 20px;
 
     font-size: 9px;
 
@@ -467,11 +742,12 @@ body {
 
     color: #4e6255;
 
+    line-height: 1.8;
 }
 
 
 /* =========================================================
-   PETITS GLYPHES
+   GLYPHES
 ========================================================= */
 
 .glyph {
@@ -486,6 +762,8 @@ body {
 
     animation:
         float 5s ease-in-out infinite alternate;
+
+    pointer-events: none;
 }
 
 
@@ -513,132 +791,63 @@ body {
 @keyframes float {
 
     from {
-        transform: translateY(-8px) rotate(-3deg);
+        transform:
+            translateY(-8px)
+            rotate(-3deg);
     }
 
     to {
-        transform: translateY(8px) rotate(3deg);
+        transform:
+            translateY(8px)
+            rotate(3deg);
     }
 
 }
-
 
 
 /* =========================================================
-   IENCH PLAYLIST
+   MOBILE
 ========================================================= */
 
-.track-now {
-    margin-bottom: 20px;
-    text-align: center;
-}
+@media (max-width: 600px) {
 
-.track-now-number {
-    font-size: 9px;
-    letter-spacing: .18em;
-    color: #4e6255;
-    margin-bottom: 8px;
-}
-
-.track-now-title {
-    font-size: 18px;
-    letter-spacing: .16em;
-    color: #dce8df;
-}
-
-.player-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 18px;
-}
-
-.player-control {
-    width: 35px;
-    height: 35px;
-    background: transparent;
-    border: 1px solid #33443a;
-    color: #8da695;
-    cursor: pointer;
-    font-family: "Courier New", monospace;
-}
-
-.player-control:hover {
-    background: #b8d3bf;
-    color: #000;
-}
-
-.time-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 9px;
-    color: #53665a;
-    letter-spacing: .1em;
-}
-
-#playlist {
-    margin-top: 24px;
-    max-height: 390px;
-    overflow-y: auto;
-    border-top: 1px solid rgba(184,211,191,.1);
-    scrollbar-width: thin;
-    scrollbar-color: #33443a transparent;
-}
-
-.playlist-item {
-    display: grid;
-    grid-template-columns: 42px 1fr auto;
-    gap: 12px;
-    align-items: center;
-    padding: 12px 10px;
-    border-bottom: 1px solid rgba(184,211,191,.08);
-    color: #53665a;
-    cursor: pointer;
-    text-align: left;
-    transition: .25s ease;
-}
-
-.playlist-item:hover {
-    background: rgba(184,211,191,.04);
-    color: #9eb5a4;
-}
-
-.playlist-item.active {
-    color: #dce8df;
-    background: rgba(184,211,191,.06);
-}
-
-.playlist-number {
-    font-size: 9px;
-    letter-spacing: .14em;
-}
-
-.playlist-title {
-    font-size: 10px;
-    letter-spacing: .11em;
-}
-
-.playlist-mark {
-    font-size: 9px;
-    opacity: .55;
-}
-
-@media (max-width: 650px) {
-
-    .track-now-title {
-        font-size: 14px;
+    .player {
+        width: 95vw;
     }
 
-    .playlist-item {
-        grid-template-columns: 34px 1fr auto;
+    .player-symbol {
+        width: 105px;
+        height: 105px;
     }
 
-    .playlist-title {
+    .player-symbol::before {
+        width: 100px;
+        height: 100px;
+    }
+
+    .player-symbol::after {
+        width: 70px;
+        height: 70px;
+    }
+
+    .player-logo {
+        width: 45px;
+        height: 45px;
+    }
+
+    .audio-player {
+        padding: 18px;
+    }
+
+    .player-title {
+        font-size: 11px;
+        letter-spacing: .2em;
+    }
+
+    .track-name {
         font-size: 9px;
-        letter-spacing: .07em;
     }
+
 }
 
 </style>
@@ -663,15 +872,16 @@ body {
 ===================================================== -->
 
 <section id="intro">
-<div class="symbol">
 
-    <img
-        src="ienchlogo.jpg"
-        class="logo-image"
-        alt="iENCH"
-    >
+    <div class="symbol">
 
-</div>
+        <img
+            src="ienchlogo.jpg"
+            class="logo-image"
+            alt="iENCH"
+        >
+
+    </div>
 
 
     <div class="logo">
@@ -728,76 +938,105 @@ body {
 
     <div class="player">
 
+
+        <!-- LOGO ANIMÉ -->
+
         <div class="player-symbol">
-            ◉
+
+            <img
+                src="ienchlogo.jpg"
+                class="player-logo"
+                alt="iENCH"
+            >
+
         </div>
 
-        <div class="player-title">
-            SIGNAL RESTORED
+
+        <div
+            id="playerTitle"
+            class="player-title">
+
+            OMEN NOMENSEYA TOLL
+
         </div>
 
-        <div class="track-now">
-            <div class="track-now-number" id="trackNowNumber">
-                01 / 20
-            </div>
 
-            <div class="track-now-title" id="trackNowTitle">
-                ALL OF YOU_iENCH
-            </div>
+        <div class="player-subtitle">
+
+            SIGNAL RESTORED // ARCHIVE NODE 004
+
         </div>
 
-        <div class="fake-player">
 
-            <audio
-                id="audioPlayer"
-                preload="metadata">
-            </audio>
+        <!-- =================================================
+             PLAYER
+        ================================================= -->
 
-            <div class="player-controls">
+        <div class="audio-player">
+
+
+            <div class="controls">
 
                 <button
-                    class="player-control"
-                    id="prevTrack"
-                    aria-label="Titre précédent">
-                    ◀
+                    id="previousButton"
+                    class="control-button"
+                    title="Previous">
+                    |◀
                 </button>
 
+
                 <button
-                    class="fake-button"
-                    id="mainPlay"
-                    aria-label="Lecture pause">
+                    id="playButton"
+                    class="control-button play-button"
+                    title="Play">
                     ▶
                 </button>
 
+
                 <button
-                    class="player-control"
-                    id="nextTrack"
-                    aria-label="Titre suivant">
-                    ▶
+                    id="nextButton"
+                    class="control-button"
+                    title="Next">
+                    ▶|
                 </button>
 
             </div>
 
-            <div class="time-row">
-                <span id="currentTime">00:00</span>
-                <span id="duration">00:00</span>
-            </div>
+
+            <!-- PROGRESSION -->
 
             <div
-                class="fake-line"
-                id="audioSeek">
+                id="audioProgress"
+                class="audio-progress">
 
                 <div
-                    class="fake-line-inner"
-                    id="audioProgress">
+                    id="audioProgressFill"
+                    class="audio-progress-fill">
                 </div>
 
             </div>
 
-            <div
-                class="playlist"
-                id="playlist">
+
+            <div class="time">
+
+                <span id="currentTime">
+                    00:00
+                </span>
+
+                <span id="duration">
+                    00:00
+                </span>
+
             </div>
+
+
+            <!-- LISTE DES TITRES -->
+
+            <div
+                id="trackList"
+                class="track-list">
+            </div>
+
 
             <div class="player-info">
 
@@ -814,13 +1053,22 @@ body {
 </section>
 
 
+<!-- =====================================================
+     AUDIO
+===================================================== -->
+
+<audio
+    id="audio"
+    preload="metadata">
+</audio>
+
+
 <script>
 
 
 /* =========================================================
-   SEQUENCE
+   INTRO
 ========================================================= */
-
 
 const progressFill =
     document.getElementById("progressFill");
@@ -905,7 +1153,6 @@ let progress = 0;
 
 function updateSequence() {
 
-
     progress +=
         Math.random() * 1.4 + 0.4;
 
@@ -927,9 +1174,16 @@ function updateSequence() {
         stages[0];
 
 
-    for (let i = 0; i < stages.length; i++) {
+    for (
+        let i = 0;
+        i < stages.length;
+        i++
+    ) {
 
-        if (progress >= stages[i].at) {
+        if (
+            progress >=
+            stages[i].at
+        ) {
 
             currentStage =
                 stages[i];
@@ -942,6 +1196,7 @@ function updateSequence() {
     status.textContent =
         currentStage.status;
 
+
     info.textContent =
         currentStage.info;
 
@@ -951,6 +1206,7 @@ function updateSequence() {
         setTimeout(() => {
 
             intro.classList.add("hide");
+
 
             setTimeout(() => {
 
@@ -982,114 +1238,87 @@ setTimeout(
 );
 
 
-
 /* =========================================================
-   IENCH AUDIO ARCHIVE
+   PLAYLIST
 ========================================================= */
 
+
+/*
+ IMPORTANT :
+
+ Les noms après "audio/" doivent correspondre
+ EXACTEMENT aux noms de tes MP3 sur GitHub.
+*/
+
+
 const tracks = [
+
     {
-        title: "ALL OF YOU_iENCH",
-        file: "audio/ALL OF YOU_iENCH.mp3"
+        title: "OMEN NOMENSEYA TOLL",
+        file: "audio/omen-nomenseya-toll.mp3"
     },
+
     {
-        title: "BLOOD FLOWER_iENCH",
-        file: "audio/BLOOD FLOWER_iENCH.mp3"
+        title: "CHAOS IN THE REVERIE",
+        file: "audio/chaos-in-the-reverie.mp3"
     },
+
     {
-        title: "BOOMERANG_iENCH",
-        file: "audio/BOOMERANG_iENCH.mp3"
+        title: "YOHOL",
+        file: "audio/yohol.mp3"
     },
+
     {
-        title: "CHAOS IN THE REVERIE_iENCH",
-        file: "audio/CHAOS IN THE REVERIE_iENCH.mp3"
+        title: "DISHUAL",
+        file: "audio/dishual.mp3"
     },
+
     {
-        title: "DESERT JOYFULL SPLEEN_iENCH",
-        file: "audio/DESERT JOYFULL SPLEEN_iENCH.mp3"
+        title: "ALL OF YOU",
+        file: "audio/all-of-you.mp3"
     },
+
     {
-        title: "DISHUAL_iENCH",
-        file: "audio/DISHUAL_iENCH.mp3"
-    },
-    {
-        title: "FOLLOW ME REMIX_iENCH",
-        file: "audio/FOLLOW ME REMIX_iENCH.mp3"
-    },
-    {
-        title: "GHOST PROTOCOL_iENCH",
-        file: "audio/GHOST PROTOCOL_iENCH.mp3"
-    },
-    {
-        title: "HAÜÜL_iENCH",
-        file: "audio/HAÜÜL_iENCH.mp3"
-    },
-    {
-        title: "IF DRAGONFLIES SPIT FIRE_iENCH",
-        file: "audio/IF DRAGONFLIES SPIT FIRE_iENCH.mp3"
-    },
-    {
-        title: "OMEN NOMENSEYA TOLL_iENCH",
-        file: "audio/OMEN NOMENSEYA TOLL_iENCH.mp3"
-    },
-    {
-        title: "PASSAGE_iENCH",
-        file: "audio/PASSAGE_iENCH.mp3"
-    },
-    {
-        title: "REVERIE IN THE CHAOS_iENCH",
-        file: "audio/REVERIE IN THE CHAOS_iENCH.mp3"
-    },
-    {
-        title: "SKIN_iENCH",
-        file: "audio/SKIN_iENCH.mp3"
-    },
-    {
-        title: "THE TASTE OF YOUR SKIN_iENCH",
-        file: "audio/THE TASTE OF YOUR SKIN_iENCH.mp3"
-    },
-    {
-        title: "THERE ARE NO LOOSERS IN APOCALYPS_iENCH",
-        file: "audio/THERE ARE NO LOOSERS IN APOCALYPS_iENCH.mp3"
-    },
-    {
-        title: "TUUTTUUT",
-        file: "audio/TUUTTUUT.mp3"
-    },
-    {
-        title: "WE ARE TRIBE WE ARE LEGION_iENCH",
-        file: "audio/WE ARE TRIBE WE ARE LEGION_iENCH.mp3"
-    },
-    {
-        title: "YOHOL_iENCH",
-        file: "audio/YOHOL_iENCH.mp3"
-    },
-    {
-        title: "YRINMEYA_iENCH",
-        file: "audio/YRINMEYA_iENCH.mp3"
+        title: "BLOOD FLOWER",
+        file: "audio/blood-flower.mp3"
     }
+
+    /*
+       Ajoute ici les autres titres.
+
+       Exemple :
+
+       ,{
+           title: "AUTRE TITRE",
+           file: "audio/autre-titre.mp3"
+       }
+
+    */
+
 ];
 
-const audioPlayer =
-    document.getElementById("audioPlayer");
 
-const mainPlay =
-    document.getElementById("mainPlay");
+/* =========================================================
+   ELEMENTS PLAYER
+========================================================= */
 
-const prevTrack =
-    document.getElementById("prevTrack");
+const audio =
+    document.getElementById("audio");
 
-const nextTrack =
-    document.getElementById("nextTrack");
+const playButton =
+    document.getElementById("playButton");
 
-const playlist =
-    document.getElementById("playlist");
+const previousButton =
+    document.getElementById("previousButton");
 
-const trackNowNumber =
-    document.getElementById("trackNowNumber");
+const nextButton =
+    document.getElementById("nextButton");
 
-const trackNowTitle =
-    document.getElementById("trackNowTitle");
+const audioProgress =
+    document.getElementById("audioProgress");
+
+const audioProgressFill =
+    document.getElementById("audioProgressFill");
 
 const currentTime =
     document.getElementById("currentTime");
@@ -1097,226 +1326,452 @@ const currentTime =
 const duration =
     document.getElementById("duration");
 
-const audioProgress =
-    document.getElementById("audioProgress");
+const playerTitle =
+    document.getElementById("playerTitle");
 
-const audioSeek =
-    document.getElementById("audioSeek");
+const trackList =
+    document.getElementById("trackList");
+
 
 let currentTrack = 0;
 
-function formatTime(seconds) {
 
-    if (!Number.isFinite(seconds)) {
-        return "00:00";
+/* =========================================================
+   AFFICHER LA PLAYLIST
+========================================================= */
+
+function createTrackList() {
+
+    trackList.innerHTML = "";
+
+
+    tracks.forEach(
+        (track, index) => {
+
+            const element =
+                document.createElement("div");
+
+
+            element.className =
+                "track";
+
+
+            element.dataset.index =
+                index;
+
+
+            element.innerHTML = `
+
+                <div class="track-number">
+                    ${String(index + 1).padStart(2, "0")}
+                </div>
+
+                <div class="track-name">
+                    ${track.title}
+                </div>
+
+                <div class="track-playing">
+                    ${index === currentTrack ? "●" : ""}
+                </div>
+
+            `;
+
+
+            element.addEventListener(
+                "click",
+                () => {
+
+                    loadTrack(index);
+
+                    playAudio();
+
+                }
+            );
+
+
+            trackList.appendChild(element);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CHARGER UN TITRE
+========================================================= */
+
+function loadTrack(index) {
+
+    if (
+        index < 0 ||
+        index >= tracks.length
+    ) {
+
+        return;
+
     }
 
-    const minutes =
-        Math.floor(seconds / 60);
-
-    const secs =
-        Math.floor(seconds % 60);
-
-    return (
-        String(minutes).padStart(2, "0") +
-        ":" +
-        String(secs).padStart(2, "0")
-    );
-}
-
-function renderPlaylist() {
-
-    playlist.innerHTML = "";
-
-    tracks.forEach((track, index) => {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "playlist-item" +
-            (index === currentTrack
-                ? " active"
-                : "");
-
-        item.innerHTML = `
-            <div class="playlist-number">
-                ${String(index + 1).padStart(2, "0")}
-            </div>
-
-            <div class="playlist-title">
-                ${track.title}
-            </div>
-
-            <div class="playlist-mark">
-                ${index === currentTrack ? "◆" : "◇"}
-            </div>
-        `;
-
-        item.addEventListener("click", () => {
-            loadTrack(index, true);
-        });
-
-        playlist.appendChild(item);
-
-    });
-}
-
-function loadTrack(index, autoplay = false) {
 
     currentTrack =
-        (index + tracks.length) %
-        tracks.length;
+        index;
 
-    const track =
-        tracks[currentTrack];
 
-    audioPlayer.src =
-        encodeURI(track.file);
+    audio.src =
+        tracks[currentTrack].file;
 
-    trackNowNumber.textContent =
-        String(currentTrack + 1).padStart(2, "0") +
-        " / " +
-        String(tracks.length).padStart(2, "0");
 
-    trackNowTitle.textContent =
-        track.title;
+    playerTitle.textContent =
+        tracks[currentTrack].title;
 
-    currentTime.textContent =
-        "00:00";
 
-    duration.textContent =
-        "00:00";
+    audio.load();
 
-    audioProgress.style.width =
-        "0%";
 
-    renderPlaylist();
+    updateTrackList();
 
-    if (autoplay) {
-
-        audioPlayer.play().catch(() => {});
-
-    }
 }
 
-mainPlay.addEventListener("click", () => {
 
-    if (audioPlayer.paused) {
+/* =========================================================
+   PLAY
+========================================================= */
 
-        audioPlayer.play().catch(() => {});
+function playAudio() {
 
-    } else {
+    audio.play()
+        .then(() => {
 
-        audioPlayer.pause();
+            playButton.textContent =
+                "❚❚";
+
+        })
+        .catch(error => {
+
+            console.log(
+                "Impossible de lire le fichier audio :",
+                error
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+function pauseAudio() {
+
+    audio.pause();
+
+    playButton.textContent =
+        "▶";
+
+}
+
+
+/* =========================================================
+   BOUTON PLAY
+========================================================= */
+
+playButton.addEventListener(
+    "click",
+    () => {
+
+        if (audio.paused) {
+
+            playAudio();
+
+        } else {
+
+            pauseAudio();
+
+        }
 
     }
-});
+);
 
-prevTrack.addEventListener("click", () => {
 
-    loadTrack(
-        currentTrack - 1,
-        true
-    );
+/* =========================================================
+   PREVIOUS
+========================================================= */
 
-});
+previousButton.addEventListener(
+    "click",
+    () => {
 
-nextTrack.addEventListener("click", () => {
+        if (
+            audio.currentTime > 3
+        ) {
 
-    loadTrack(
-        currentTrack + 1,
-        true
-    );
+            audio.currentTime = 0;
 
-});
+            return;
 
-audioPlayer.addEventListener("play", () => {
+        }
 
-    mainPlay.textContent = "Ⅱ";
 
-});
+        currentTrack--;
 
-audioPlayer.addEventListener("pause", () => {
 
-    mainPlay.textContent = "▶";
+        if (
+            currentTrack < 0
+        ) {
 
-});
+            currentTrack =
+                tracks.length - 1;
 
-audioPlayer.addEventListener(
+        }
+
+
+        loadTrack(currentTrack);
+
+        playAudio();
+
+    }
+);
+
+
+/* =========================================================
+   NEXT
+========================================================= */
+
+nextButton.addEventListener(
+    "click",
+    () => {
+
+        currentTrack++;
+
+
+        if (
+            currentTrack >= tracks.length
+        ) {
+
+            currentTrack = 0;
+
+        }
+
+
+        loadTrack(currentTrack);
+
+        playAudio();
+
+    }
+);
+
+
+/* =========================================================
+   TITRE SUIVANT AUTOMATIQUE
+========================================================= */
+
+audio.addEventListener(
+    "ended",
+    () => {
+
+        currentTrack++;
+
+
+        if (
+            currentTrack >= tracks.length
+        ) {
+
+            currentTrack = 0;
+
+        }
+
+
+        loadTrack(currentTrack);
+
+        playAudio();
+
+    }
+);
+
+
+/* =========================================================
+   PROGRESSION
+========================================================= */
+
+audio.addEventListener(
+    "timeupdate",
+    () => {
+
+        if (
+            !audio.duration
+        ) {
+
+            return;
+
+        }
+
+
+        const percentage =
+            (
+                audio.currentTime /
+                audio.duration
+            ) * 100;
+
+
+        audioProgressFill.style.width =
+            percentage + "%";
+
+
+        currentTime.textContent =
+            formatTime(
+                audio.currentTime
+            );
+
+    }
+);
+
+
+/* =========================================================
+   DUREE
+========================================================= */
+
+audio.addEventListener(
     "loadedmetadata",
     () => {
 
         duration.textContent =
-            formatTime(audioPlayer.duration);
-
-    }
-);
-
-audioPlayer.addEventListener(
-    "timeupdate",
-    () => {
-
-        if (!Number.isFinite(
-            audioPlayer.duration
-        )) {
-            return;
-        }
-
-        const ratio =
-            audioPlayer.currentTime /
-            audioPlayer.duration;
-
-        currentTime.textContent =
             formatTime(
-                audioPlayer.currentTime
+                audio.duration
             );
 
-        audioProgress.style.width =
-            (ratio * 100) + "%";
-
     }
 );
 
-audioPlayer.addEventListener(
-    "ended",
-    () => {
 
-        loadTrack(
-            currentTrack + 1,
-            true
-        );
+/* =========================================================
+   CLIC SUR BARRE
+========================================================= */
 
-    }
-);
-
-audioSeek.addEventListener(
+audioProgress.addEventListener(
     "click",
     (event) => {
 
-        if (!Number.isFinite(
-            audioPlayer.duration
-        )) {
+        if (
+            !audio.duration
+        ) {
+
             return;
+
         }
 
+
         const rect =
-            audioSeek.getBoundingClientRect();
+            audioProgress.getBoundingClientRect();
 
-        const position =
-            (
-                event.clientX -
-                rect.left
-            ) / rect.width;
 
-        audioPlayer.currentTime =
-            audioPlayer.duration *
-            position;
+        const clickPosition =
+            event.clientX -
+            rect.left;
+
+
+        const percentage =
+            clickPosition /
+            rect.width;
+
+
+        audio.currentTime =
+            percentage *
+            audio.duration;
 
     }
 );
 
-loadTrack(0, false);
+
+/* =========================================================
+   FORMAT TEMPS
+========================================================= */
+
+function formatTime(seconds) {
+
+    if (
+        isNaN(seconds)
+    ) {
+
+        return "00:00";
+
+    }
+
+
+    const minutes =
+        Math.floor(
+            seconds / 60
+        );
+
+
+    const secs =
+        Math.floor(
+            seconds % 60
+        );
+
+
+    return (
+        String(minutes).padStart(2, "0")
+        +
+        ":"
+        +
+        String(secs).padStart(2, "0")
+    );
+
+}
+
+
+/* =========================================================
+   MISE A JOUR LISTE
+========================================================= */
+
+function updateTrackList() {
+
+    const elements =
+        document.querySelectorAll(".track");
+
+
+    elements.forEach(
+        (element, index) => {
+
+            if (
+                index === currentTrack
+            ) {
+
+                element.classList.add(
+                    "active"
+                );
+
+                element.querySelector(
+                    ".track-playing"
+                ).textContent = "●";
+
+            } else {
+
+                element.classList.remove(
+                    "active"
+                );
+
+                element.querySelector(
+                    ".track-playing"
+                ).textContent = "";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INITIALISATION
+========================================================= */
+
+createTrackList();
+
+loadTrack(0);
+
 
 </script>
 
