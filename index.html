@@ -96,84 +96,173 @@ body{overflow:hidden}
     color:#64776a;
 }
 
-/* ================= ARCHIVE SLIDESHOW ================= */
+/* ================= FULL SCREEN LOGO BACKGROUND ================= */
 #archive::before{
     content:"";
     position:fixed;
     inset:0;
     z-index:0;
     background:
-        radial-gradient(circle at 50% 42%, rgba(255,72,0,.12), transparent 34%),
-        linear-gradient(180deg, rgba(0,0,0,.42), rgba(0,0,0,.72));
+        radial-gradient(circle at center, rgba(0,0,0,.05) 0%, rgba(0,0,0,.56) 58%, rgba(0,0,0,.84) 100%),
+        linear-gradient(rgba(0,0,0,.20), rgba(0,0,0,.42));
     pointer-events:none;
 }
+
+.archive-background-logo{
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    object-fit:cover;
+    object-position:center center;
+    z-index:0;
+    opacity:.78;
+    filter:brightness(.72) contrast(1.12) saturate(1.08)
+           drop-shadow(0 0 25px rgba(255,80,0,.35));
+    transform:scale(1.015);
+    animation:backgroundLogoBreath 12s ease-in-out infinite,
+              backgroundLogoFlicker 7s ease-in-out infinite;
+    pointer-events:none;
+}
+
+.logo-background-glow{
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:min(92vw,1100px);
+    height:min(92vw,1100px);
+    transform:translate(-50%,-50%);
+    z-index:1;
+    border-radius:50%;
+    background:radial-gradient(circle, transparent 48%,
+        rgba(255,70,0,.08) 57%,
+        rgba(255,100,0,.18) 61%,
+        rgba(255,70,0,.04) 70%, transparent 76%);
+    filter:blur(8px);
+    animation:backgroundHalo 8s ease-in-out infinite;
+    pointer-events:none;
+}
+
+.archive-vignette{
+    position:fixed;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+    background:radial-gradient(ellipse at center,
+        rgba(0,0,0,.06) 0%,
+        rgba(0,0,0,.18) 38%,
+        rgba(0,0,0,.70) 100%);
+}
+
+/* ================= DIAPORAMA ================= */
 .archive-slideshow{
     position:fixed;
     inset:0;
-    z-index:0;
+    z-index:3;
     overflow:hidden;
     pointer-events:none;
-}
-.slide-photo{
-    position:absolute;
-    width:clamp(260px, 32vw, 520px);
-    height:clamp(190px, 25vw, 380px);
-    object-fit:cover;
-    opacity:0;
-    border:1px solid rgba(184,211,191,.16);
-    box-shadow:0 0 35px rgba(0,0,0,.65), 0 0 45px rgba(255,70,0,.08);
-    filter:saturate(.72) contrast(1.08) brightness(.55);
-    transition:opacity 2.4s ease, transform 8s cubic-bezier(.2,.7,.2,1), filter 2s ease;
+    opacity:.34;
     mix-blend-mode:screen;
 }
-.slide-photo::after{content:""}
-.slide-photo.visible{opacity:.38;filter:saturate(.78) contrast(1.08) brightness(.62)}
-.slide-photo.s1{left:3%;top:10%;transform:rotate(-7deg) scale(1.04)}
-.slide-photo.s2{right:4%;top:8%;transform:rotate(5deg) scale(.96)}
-.slide-photo.s3{left:10%;bottom:8%;transform:rotate(4deg) scale(.92)}
-.slide-photo.s4{right:9%;bottom:7%;transform:rotate(-6deg) scale(1.05)}
-.slide-photo.s5{left:34%;top:4%;transform:rotate(-2deg) scale(.82);opacity:.20}
-.slide-photo.s6{right:30%;bottom:2%;transform:rotate(3deg) scale(.88);opacity:.18}
-.slide-photo.s7{left:28%;top:28%;transform:rotate(-10deg) scale(.72);opacity:.12}
-.slide-photo.s8{right:26%;top:31%;transform:rotate(9deg) scale(.70);opacity:.12}
-.slide-photo.visible.s1{transform:rotate(-5deg) scale(1.12) translate(20px,-8px)}
-.slide-photo.visible.s2{transform:rotate(4deg) scale(1.04) translate(-18px,14px)}
-.slide-photo.visible.s3{transform:rotate(3deg) scale(1.02) translate(-12px,-16px)}
-.slide-photo.visible.s4{transform:rotate(-4deg) scale(1.12) translate(16px,10px)}
-.slide-photo.visible.s5{transform:rotate(2deg) scale(.94) translate(-18px,10px)}
-.slide-photo.visible.s6{transform:rotate(-2deg) scale(1.0) translate(15px,-8px)}
-.slide-photo.visible.s7{transform:rotate(-6deg) scale(.84) translate(-10px,12px)}
-.slide-photo.visible.s8{transform:rotate(6deg) scale(.82) translate(12px,-10px)}
+
+.slide-photo{
+    position:absolute;
+    width:clamp(220px,26vw,430px);
+    height:clamp(160px,20vw,320px);
+    object-fit:cover;
+    opacity:0;
+    border:1px solid rgba(255,120,40,.16);
+    box-shadow:0 0 35px rgba(0,0,0,.7);
+    filter:saturate(.55) contrast(1.08) brightness(.45);
+    transition:opacity 2.8s ease, transform 10s cubic-bezier(.2,.7,.2,1),
+               filter 2.4s ease;
+}
+
+.slide-photo.visible{
+    opacity:.34;
+    filter:saturate(.62) contrast(1.08) brightness(.50);
+}
+
+.slide-photo.s1{left:1%;top:6%;transform:rotate(-8deg) scale(1.02)}
+.slide-photo.s2{right:1%;top:5%;transform:rotate(7deg) scale(.98)}
+.slide-photo.s3{left:5%;bottom:5%;transform:rotate(5deg) scale(.95)}
+.slide-photo.s4{right:5%;bottom:4%;transform:rotate(-7deg) scale(1.02)}
+.slide-photo.s5{left:24%;top:1%;transform:rotate(-3deg) scale(.75)}
+.slide-photo.s6{right:24%;bottom:0%;transform:rotate(4deg) scale(.78)}
+.slide-photo.s7{left:10%;top:35%;transform:rotate(-11deg) scale(.68)}
+.slide-photo.s8{right:10%;top:33%;transform:rotate(10deg) scale(.68)}
+
+.slide-photo.visible.s1{transform:rotate(-5deg) scale(1.10) translate(24px,-10px)}
+.slide-photo.visible.s2{transform:rotate(4deg) scale(1.06) translate(-22px,14px)}
+.slide-photo.visible.s3{transform:rotate(3deg) scale(1.03) translate(-15px,-18px)}
+.slide-photo.visible.s4{transform:rotate(-4deg) scale(1.10) translate(18px,12px)}
+.slide-photo.visible.s5{transform:rotate(2deg) scale(.88) translate(-18px,12px)}
+.slide-photo.visible.s6{transform:rotate(-2deg) scale(.91) translate(16px,-10px)}
+.slide-photo.visible.s7{transform:rotate(-7deg) scale(.80) translate(-10px,14px)}
+.slide-photo.visible.s8{transform:rotate(7deg) scale(.80) translate(12px,-12px)}
+
 .slideshow-noise{
     position:absolute;
     inset:0;
-    background-image:radial-gradient(rgba(255,255,255,.07) .6px, transparent .6px);
+    background-image:radial-gradient(rgba(255,255,255,.07) .6px,transparent .6px);
     background-size:4px 4px;
-    opacity:.06;
+    opacity:.055;
     mix-blend-mode:screen;
 }
-/* The player stays clearly above the moving photographs. */
-#archive .player{position:relative;z-index:10}
+
+/* Le lecteur reste parfaitement lisible au-dessus du décor. */
+#archive .player{
+    position:relative;
+    z-index:20;
+}
+
 #archive .player::before{
     content:"";
     position:absolute;
-    inset:-90px -110px;
+    inset:-100px -140px;
     z-index:-1;
-    background:radial-gradient(ellipse at center, rgba(0,0,0,.88) 0%, rgba(0,0,0,.66) 42%, rgba(0,0,0,.18) 72%, transparent 100%);
+    background:radial-gradient(ellipse at center,
+        rgba(0,0,0,.94) 0%,
+        rgba(0,0,0,.82) 38%,
+        rgba(0,0,0,.48) 64%,
+        transparent 82%);
     pointer-events:none;
 }
+
+@keyframes backgroundLogoBreath{
+    0%,100%{transform:scale(1.015)}
+    50%{transform:scale(1.045)}
+}
+@keyframes backgroundLogoFlicker{
+    0%,100%{opacity:.74}
+    45%{opacity:.80}
+    47%{opacity:.68}
+    49%{opacity:.79}
+    73%{opacity:.76}
+    75%{opacity:.69}
+    77%{opacity:.78}
+}
+@keyframes backgroundHalo{
+    0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(.98)}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.035)}
+}
+
 @media(max-width:900px){
-    .slide-photo{width:42vw;height:31vw;opacity:.16}
-    .slide-photo.visible{opacity:.22}
+    .archive-background-logo{opacity:.68}
+    .archive-slideshow{opacity:.24}
+    .slide-photo{width:38vw;height:29vw}
     .slide-photo.s5,.slide-photo.s6,.slide-photo.s7,.slide-photo.s8{display:none}
 }
 @media(max-width:600px){
-    .slide-photo{width:52vw;height:39vw}
-    .slide-photo.s1{left:-12%;top:8%}
-    .slide-photo.s2{right:-13%;top:10%}
-    .slide-photo.s3{left:-8%;bottom:9%}
-    .slide-photo.s4{right:-10%;bottom:8%}
-    #archive .player::before{inset:-45px -35px}
+    .archive-background-logo{opacity:.62}
+    .logo-background-glow{width:115vw;height:115vw}
+    .archive-slideshow{opacity:.18}
+    .slide-photo{width:50vw;height:38vw}
+    .slide-photo.s1{left:-14%;top:7%}
+    .slide-photo.s2{right:-14%;top:9%}
+    .slide-photo.s3{left:-10%;bottom:8%}
+    .slide-photo.s4{right:-11%;bottom:7%}
+    #archive .player::before{inset:-50px -35px}
 }
 
 /* ================= ARCHIVE ================= */
@@ -223,7 +312,9 @@ body{overflow:hidden}
 }
 
 .audio-player{
-    border:1px solid rgba(184,211,191,.2);
+    border:1px solid rgba(184,211,191,.24);
+    background:rgba(0,0,0,.30);
+    backdrop-filter:blur(2px);
     padding:25px;
 }
 .controls{
@@ -404,6 +495,12 @@ body{overflow:hidden}
 </section>
 
 <section id="archive">
+    <img src="ienchlogo.jpg" class="archive-background-logo" alt="" aria-hidden="true">
+    <div class="logo-background-glow" aria-hidden="true"></div>
+    <div class="archive-vignette" aria-hidden="true">
+
+    </div>
+
     <div id="archiveSlideshow" class="archive-slideshow" aria-hidden="true">
         <img class="slide-photo s1" alt="">
         <img class="slide-photo s2" alt="">
@@ -417,10 +514,6 @@ body{overflow:hidden}
     </div>
 
     <div class="player">
-
-        <div class="player-symbol">
-            <img src="ienchlogo.jpg" class="player-logo" alt="iENCH">
-        </div>
 
         <div id="playerTitle" class="player-title">LOADING ARCHIVE</div>
         <div class="player-subtitle">
