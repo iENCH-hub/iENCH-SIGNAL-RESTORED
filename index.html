@@ -3,1718 +3,882 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>iENCH // NODE 004</title>
 
 <style>
+*{box-sizing:border-box}
+html,body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    background:#000;
+    color:#b8d3bf;
+    font-family:"Courier New",monospace;
+}
+body{overflow:hidden}
 
-* {
-    box-sizing: border-box;
+/* ================= INTRO ================= */
+#intro{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:#000;
+    z-index:100;
+    transition:opacity 2s ease,visibility 2s ease;
+}
+#intro.hide{opacity:0;visibility:hidden}
+
+.symbol,.player-symbol{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.symbol{
+    width:160px;
+    height:160px;
+    margin-bottom:35px;
+}
+.symbol::before,.player-symbol::before{
+    content:"";
+    position:absolute;
+    border:1px solid rgba(184,211,191,.35);
+    border-radius:50%;
+    animation:rotate 14s linear infinite;
+}
+.symbol::before{width:150px;height:150px}
+.symbol::after,.player-symbol::after{
+    content:"";
+    position:absolute;
+    border:1px dashed rgba(184,211,191,.35);
+    border-radius:50%;
+    animation:rotateReverse 9s linear infinite;
+}
+.symbol::after{width:105px;height:105px}
+
+.logo-image,.player-logo{
+    position:relative;
+    z-index:2;
+    object-fit:contain;
+    opacity:.9;
+    filter:brightness(.9) drop-shadow(0 0 15px rgba(184,211,191,.3));
+}
+.logo-image{width:80px;height:80px}
+.logo{
+    font-family:"DejaVu Sans Light",monospace;
+    font-size:42px;
+    font-weight:400;
+    letter-spacing:.25em;
+    margin-left:.25em;
+    color:#dce8df;
+    opacity:0;
+    animation:appear 1s ease forwards;
+    animation-delay:.5s;
+}
+.subtitle{
+    margin-top:12px;
+    font-size:11px;
+    letter-spacing:.4em;
+    color:#53665a;
+    opacity:0;
+    animation:appear 2s ease forwards;
+    animation-delay:1.8s;
+}
+.status{
+    margin-top:55px;
+    min-height:18px;
+    font-size:12px;
+    letter-spacing:.2em;
+    color:#9eb5a4;
+}
+.info{
+    margin-top:12px;
+    min-height:16px;
+    font-size:10px;
+    letter-spacing:.2em;
+    color:#4e6255;
+}
+.progress-wrapper{
+    width:min(500px,70vw);
+    margin-top:18px;
+}
+.progress{
+    width:100%;
+    height:3px;
+    background:#101511;
+    overflow:hidden;
+}
+.progress-fill{
+    width:0%;
+    height:100%;
+    background:#b8d3bf;
+    box-shadow:0 0 15px rgba(184,211,191,.7);
+    transition:width .08s linear;
+}
+.percent{
+    margin-top:10px;
+    font-size:10px;
+    color:#64776a;
 }
 
-html,
-body {
-    margin: 0;
-    width: 100%;
-    min-height: 100%;
-    background: #000;
-    color: #b8d3bf;
-    font-family: "Courier New", monospace;
+/* ================= ARCHIVE ================= */
+#archive{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#000;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 2s ease,visibility 2s ease;
+    z-index:10;
+    overflow-y:auto;
+    padding:40px 20px;
+}
+#archive.show{opacity:1;visibility:visible}
+
+.player{
+    width:min(850px,90vw);
+    text-align:center;
+}
+.player-symbol{
+    width:130px;
+    height:130px;
+    margin:0 auto 30px;
+}
+.player-symbol::before{width:120px;height:120px}
+.player-symbol::after{width:82px;height:82px}
+.player-logo{
+    width:55px;
+    height:55px;
+    animation:pulse 3s ease-in-out infinite;
+}
+.player-title{
+    font-size:14px;
+    letter-spacing:.3em;
+    color:#dce8df;
+    margin-bottom:8px;
+}
+.player-subtitle{
+    font-size:9px;
+    letter-spacing:.25em;
+    color:#4e6255;
+    margin-bottom:28px;
 }
 
-body {
-    overflow: hidden;
+.audio-player{
+    border:1px solid rgba(184,211,191,.2);
+    padding:25px;
+}
+.controls{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    margin-bottom:25px;
+}
+.control-button{
+    width:45px;
+    height:45px;
+    border:1px solid #53665a;
+    background:transparent;
+    color:#b8d3bf;
+    font-family:"Courier New",monospace;
+    cursor:pointer;
+    font-size:14px;
+    transition:background .2s,color .2s,border .2s;
+}
+.control-button:hover{
+    background:#b8d3bf;
+    color:#000;
+    border-color:#b8d3bf;
+}
+.play-button{
+    width:58px;
+    height:58px;
+    font-size:18px;
+}
+.audio-progress{
+    width:100%;
+    height:3px;
+    background:#151c17;
+    cursor:pointer;
+    position:relative;
+}
+.audio-progress-fill{
+    width:0%;
+    height:100%;
+    background:#b8d3bf;
+    box-shadow:0 0 10px rgba(184,211,191,.5);
+}
+.time{
+    display:flex;
+    justify-content:space-between;
+    margin-top:9px;
+    font-size:9px;
+    color:#53665a;
+}
+.track-list{
+    margin-top:30px;
+    border-top:1px solid rgba(184,211,191,.12);
+    max-height:46vh;
+    overflow-y:auto;
+}
+.track{
+    display:flex;
+    align-items:center;
+    padding:13px 10px;
+    border-bottom:1px solid rgba(184,211,191,.08);
+    cursor:pointer;
+    transition:background .2s,padding-left .2s;
+}
+.track:hover{
+    background:rgba(184,211,191,.05);
+    padding-left:15px;
+}
+.track-number{
+    width:35px;
+    text-align:left;
+    font-size:9px;
+    color:#53665a;
+}
+.track-name{
+    flex:1;
+    text-align:left;
+    font-size:10px;
+    letter-spacing:.18em;
+    color:#82998a;
+}
+.track.active{background:rgba(184,211,191,.07)}
+.track.active .track-name{color:#dce8df}
+.track.active .track-number{color:#b8d3bf}
+.track-playing{
+    width:25px;
+    text-align:right;
+    font-size:9px;
+    color:#b8d3bf;
+}
+.player-info{
+    margin-top:20px;
+    font-size:9px;
+    letter-spacing:.2em;
+    color:#4e6255;
+    line-height:1.8;
+}
+.error{
+    margin-top:20px;
+    color:#795c5c;
+    font-size:10px;
+    letter-spacing:.12em;
+    line-height:1.8;
 }
 
+/* ================= GLYPHES ================= */
+.glyph{
+    position:fixed;
+    color:#29382e;
+    font-size:14px;
+    opacity:.35;
+    animation:float 5s ease-in-out infinite alternate;
+    pointer-events:none;
+}
+.g1{top:15%;left:18%}
+.g2{top:30%;right:17%}
+.g3{bottom:20%;left:20%}
+.g4{bottom:17%;right:22%}
 
-/* =========================================================
-   INTRO
-========================================================= */
-
-#intro {
-    position: fixed;
-    inset: 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    text-align: center;
-    background: #000;
-
-    z-index: 100;
-
-    transition:
-        opacity 2s ease,
-        visibility 2s ease;
+/* ================= ANIMATIONS ================= */
+@keyframes rotate{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+@keyframes rotateReverse{
+    from{transform:rotate(360deg)}
+    to{transform:rotate(0deg)}
+}
+@keyframes pulse{
+    0%,100%{transform:scale(1);opacity:.55}
+    50%{transform:scale(1.08);opacity:1}
+}
+@keyframes appear{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:translateY(0)}
+}
+@keyframes float{
+    from{transform:translateY(-8px) rotate(-3deg)}
+    to{transform:translateY(8px) rotate(3deg)}
 }
 
-#intro.hide {
-    opacity: 0;
-    visibility: hidden;
+@media(max-width:600px){
+    .player{width:95vw}
+    .player-symbol{width:105px;height:105px}
+    .player-symbol::before{width:100px;height:100px}
+    .player-symbol::after{width:70px;height:70px}
+    .player-logo{width:45px;height:45px}
+    .audio-player{padding:18px}
+    .player-title{font-size:11px;letter-spacing:.2em}
+    .track-name{font-size:9px}
+    .track-list{max-height:50vh}
 }
-
-
-/* =========================================================
-   SYMBOLE
-========================================================= */
-
-.symbol {
-    position: relative;
-
-    width: 160px;
-    height: 160px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-bottom: 35px;
-}
-
-
-/* cercle extérieur */
-
-.symbol::before {
-    content: "";
-
-    position: absolute;
-
-    width: 150px;
-    height: 150px;
-
-    border: 1px solid rgba(184,211,191,0.35);
-
-    border-radius: 50%;
-
-    animation:
-        rotate 14s linear infinite;
-}
-
-
-/* cercle intérieur */
-
-.symbol::after {
-    content: "";
-
-    position: absolute;
-
-    width: 105px;
-    height: 105px;
-
-    border: 1px dashed rgba(184,211,191,0.35);
-
-    border-radius: 50%;
-
-    animation:
-        rotateReverse 9s linear infinite;
-}
-
-
-/* logo */
-
-.logo-image {
-    position: relative;
-
-    z-index: 2;
-
-    width: 80px;
-    height: 80px;
-
-    object-fit: contain;
-
-    opacity: .9;
-
-    filter:
-        brightness(.9)
-        drop-shadow(0 0 15px rgba(184,211,191,.3));
-}
-
-
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
-@keyframes rotate {
-
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-
-}
-
-@keyframes rotateReverse {
-
-    from {
-        transform: rotate(360deg);
-    }
-
-    to {
-        transform: rotate(0deg);
-    }
-
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: .55;
-    }
-
-    50% {
-        transform: scale(1.08);
-        opacity: 1;
-    }
-
-}
-
-@keyframes appear {
-
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-}
-
-@keyframes scan {
-
-    0% {
-        opacity: .3;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: .3;
-    }
-
-}
-
-
-/* =========================================================
-   LOGO INTRO
-========================================================= */
-
-.logo {
-    font-family: "DejaVu Sans Light", monospace;
-
-    font-size: 42px;
-
-    font-weight: 400;
-
-    letter-spacing: 0.25em;
-
-    margin-left: 0.25em;
-
-    color: #dce8df;
-
-    opacity: 0;
-
-    animation:
-        appear 1s ease forwards;
-
-    animation-delay: .5s;
-}
-
-
-.subtitle {
-
-    margin-top: 12px;
-
-    font-size: 11px;
-
-    letter-spacing: 0.4em;
-
-    color: #53665a;
-
-    opacity: 0;
-
-    animation:
-        appear 2s ease forwards;
-
-    animation-delay: 1.8s;
-}
-
-
-/* =========================================================
-   TEXTE ETAT
-========================================================= */
-
-.status {
-
-    margin-top: 55px;
-
-    min-height: 18px;
-
-    font-size: 12px;
-
-    letter-spacing: 0.2em;
-
-    color: #9eb5a4;
-}
-
-
-.info {
-
-    margin-top: 12px;
-
-    min-height: 16px;
-
-    font-size: 10px;
-
-    letter-spacing: 0.2em;
-
-    color: #4e6255;
-}
-
-
-/* =========================================================
-   BARRE INTRO
-========================================================= */
-
-.progress-wrapper {
-
-    width: min(500px, 70vw);
-
-    margin-top: 18px;
-}
-
-
-.progress {
-
-    width: 100%;
-
-    height: 3px;
-
-    background: #101511;
-
-    overflow: hidden;
-}
-
-
-.progress-fill {
-
-    width: 0%;
-
-    height: 100%;
-
-    background: #b8d3bf;
-
-    box-shadow:
-        0 0 15px rgba(184,211,191,.7);
-
-    transition: width .08s linear;
-}
-
-
-.percent {
-
-    margin-top: 10px;
-
-    font-size: 10px;
-
-    color: #64776a;
-}
-
-
-/* =========================================================
-   ARCHIVE
-========================================================= */
-
-#archive {
-
-    position: fixed;
-
-    inset: 0;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    background: #000;
-
-    opacity: 0;
-
-    visibility: hidden;
-
-    transition:
-        opacity 2s ease,
-        visibility 2s ease;
-
-    z-index: 10;
-
-    overflow-y: auto;
-
-    padding: 40px 20px;
-}
-
-
-#archive.show {
-
-    opacity: 1;
-
-    visibility: visible;
-
-}
-
-
-/* =========================================================
-   LECTEUR
-========================================================= */
-
-.player {
-
-    width: min(850px, 90vw);
-
-    text-align: center;
-
-}
-
-
-/* =========================================================
-   LOGO DU LECTEUR
-========================================================= */
-
-.player-symbol {
-
-    position: relative;
-
-    width: 130px;
-    height: 130px;
-
-    margin: 0 auto 30px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-}
-
-
-/* grand cercle */
-
-.player-symbol::before {
-
-    content: "";
-
-    position: absolute;
-
-    width: 120px;
-    height: 120px;
-
-    border:
-        1px solid rgba(184,211,191,.35);
-
-    border-radius: 50%;
-
-    animation:
-        rotate 14s linear infinite;
-}
-
-
-/* petit cercle */
-
-.player-symbol::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 82px;
-    height: 82px;
-
-    border:
-        1px dashed rgba(184,211,191,.35);
-
-    border-radius: 50%;
-
-    animation:
-        rotateReverse 9s linear infinite;
-}
-
-
-/* logo au centre */
-
-.player-logo {
-
-    position: relative;
-
-    z-index: 2;
-
-    width: 55px;
-    height: 55px;
-
-    object-fit: contain;
-
-    opacity: .9;
-
-    filter:
-        brightness(.9)
-        drop-shadow(0 0 15px rgba(184,211,191,.35));
-
-    animation:
-        pulse 3s ease-in-out infinite;
-}
-
-
-/* =========================================================
-   TITRE
-========================================================= */
-
-.player-title {
-
-    font-size: 14px;
-
-    letter-spacing: 0.3em;
-
-    color: #dce8df;
-
-    margin-bottom: 8px;
-}
-
-
-.player-subtitle {
-
-    font-size: 9px;
-
-    letter-spacing: .25em;
-
-    color: #4e6255;
-
-    margin-bottom: 28px;
-}
-
-
-/* =========================================================
-   PLAYER
-========================================================= */
-
-.audio-player {
-
-    border:
-        1px solid rgba(184,211,191,.2);
-
-    padding: 25px;
-}
-
-
-/* =========================================================
-   CONTROLES
-========================================================= */
-
-.controls {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 15px;
-
-    margin-bottom: 25px;
-}
-
-
-.control-button {
-
-    width: 45px;
-    height: 45px;
-
-    border:
-        1px solid #53665a;
-
-    background: transparent;
-
-    color: #b8d3bf;
-
-    font-family:
-        "Courier New",
-        monospace;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    transition:
-        background .2s,
-        color .2s,
-        border .2s;
-}
-
-
-.control-button:hover {
-
-    background: #b8d3bf;
-
-    color: #000;
-
-    border-color: #b8d3bf;
-}
-
-
-.play-button {
-
-    width: 58px;
-    height: 58px;
-
-    font-size: 18px;
-}
-
-
-/* =========================================================
-   PROGRESSION AUDIO
-========================================================= */
-
-.audio-progress {
-
-    width: 100%;
-
-    height: 3px;
-
-    background: #151c17;
-
-    cursor: pointer;
-
-    position: relative;
-}
-
-
-.audio-progress-fill {
-
-    width: 0%;
-
-    height: 100%;
-
-    background: #b8d3bf;
-
-    box-shadow:
-        0 0 10px rgba(184,211,191,.5);
-}
-
-
-/* =========================================================
-   TEMPS
-========================================================= */
-
-.time {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    margin-top: 9px;
-
-    font-size: 9px;
-
-    color: #53665a;
-}
-
-
-/* =========================================================
-   LISTE
-========================================================= */
-
-.track-list {
-
-    margin-top: 30px;
-
-    border-top:
-        1px solid rgba(184,211,191,.12);
-}
-
-
-.track {
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 13px 10px;
-
-    border-bottom:
-        1px solid rgba(184,211,191,.08);
-
-    cursor: pointer;
-
-    transition:
-        background .2s,
-        padding-left .2s;
-}
-
-
-.track:hover {
-
-    background:
-        rgba(184,211,191,.05);
-
-    padding-left: 15px;
-}
-
-
-.track-number {
-
-    width: 35px;
-
-    text-align: left;
-
-    font-size: 9px;
-
-    color: #53665a;
-}
-
-
-.track-name {
-
-    flex: 1;
-
-    text-align: left;
-
-    font-size: 10px;
-
-    letter-spacing: .18em;
-
-    color: #82998a;
-}
-
-
-.track.active {
-
-    background:
-        rgba(184,211,191,.07);
-}
-
-
-.track.active .track-name {
-
-    color: #dce8df;
-
-}
-
-
-.track.active .track-number {
-
-    color: #b8d3bf;
-}
-
-
-.track-playing {
-
-    width: 25px;
-
-    text-align: right;
-
-    font-size: 9px;
-
-    color: #b8d3bf;
-}
-
-
-/* =========================================================
-   INFO
-========================================================= */
-
-.player-info {
-
-    margin-top: 20px;
-
-    font-size: 9px;
-
-    letter-spacing: .2em;
-
-    color: #4e6255;
-
-    line-height: 1.8;
-}
-
-
-/* =========================================================
-   GLYPHES
-========================================================= */
-
-.glyph {
-
-    position: fixed;
-
-    color: #29382e;
-
-    font-size: 14px;
-
-    opacity: .35;
-
-    animation:
-        float 5s ease-in-out infinite alternate;
-
-    pointer-events: none;
-}
-
-
-.g1 {
-    top: 15%;
-    left: 18%;
-}
-
-.g2 {
-    top: 30%;
-    right: 17%;
-}
-
-.g3 {
-    bottom: 20%;
-    left: 20%;
-}
-
-.g4 {
-    bottom: 17%;
-    right: 22%;
-}
-
-
-@keyframes float {
-
-    from {
-        transform:
-            translateY(-8px)
-            rotate(-3deg);
-    }
-
-    to {
-        transform:
-            translateY(8px)
-            rotate(3deg);
-    }
-
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 600px) {
-
-    .player {
-        width: 95vw;
-    }
-
-    .player-symbol {
-        width: 105px;
-        height: 105px;
-    }
-
-    .player-symbol::before {
-        width: 100px;
-        height: 100px;
-    }
-
-    .player-symbol::after {
-        width: 70px;
-        height: 70px;
-    }
-
-    .player-logo {
-        width: 45px;
-        height: 45px;
-    }
-
-    .audio-player {
-        padding: 18px;
-    }
-
-    .player-title {
-        font-size: 11px;
-        letter-spacing: .2em;
-    }
-
-    .track-name {
-        font-size: 9px;
-    }
-
-}
-
 </style>
 </head>
 
-
 <body>
-
-
-<!-- =====================================================
-     GLYPHES
-===================================================== -->
 
 <div class="glyph g1">𐌗</div>
 <div class="glyph g2">◉</div>
 <div class="glyph g3">⋔</div>
 <div class="glyph g4">⟟</div>
 
-
-<!-- =====================================================
-     INTRO
-===================================================== -->
-
 <section id="intro">
-
     <div class="symbol">
-
-        <img
-            src="ienchlogo.jpg"
-            class="logo-image"
-            alt="iENCH"
-        >
-
+        <img src="ienchlogo.jpg" class="logo-image" alt="iENCH">
     </div>
 
+    <div class="logo">iENCH</div>
+    <div class="subtitle">ARCHIVE NODE 004</div>
 
-    <div class="logo">
-        iENCH
-    </div>
-
-
-    <div class="subtitle">
-        ARCHIVE NODE 004
-    </div>
-
-
-    <div
-        id="status"
-        class="status">
-        INITIALIZING
-    </div>
-
-
-    <div
-        id="info"
-        class="info">
-        SEARCHING FOR SIGNAL
-    </div>
-
+    <div id="status" class="status">INITIALIZING</div>
+    <div id="info" class="info">SEARCHING FOR SIGNAL</div>
 
     <div class="progress-wrapper">
-
         <div class="progress">
-
-            <div
-                id="progressFill"
-                class="progress-fill">
-            </div>
-
+            <div id="progressFill" class="progress-fill"></div>
         </div>
-
-        <div
-            id="percent"
-            class="percent">
-            0%
-        </div>
-
+        <div id="percent" class="percent">0%</div>
     </div>
-
 </section>
 
-
-<!-- =====================================================
-     ARCHIVE
-===================================================== -->
-
 <section id="archive">
-
     <div class="player">
 
-
-        <!-- LOGO ANIMÉ -->
-
         <div class="player-symbol">
-
-            <img
-                src="ienchlogo.jpg"
-                class="player-logo"
-                alt="iENCH"
-            >
-
+            <img src="ienchlogo.jpg" class="player-logo" alt="iENCH">
         </div>
 
-
-        <div
-            id="playerTitle"
-            class="player-title">
-
-            OMEN NOMENSEYA TOLL
-
-        </div>
-
-
+        <div id="playerTitle" class="player-title">LOADING ARCHIVE</div>
         <div class="player-subtitle">
-
             SIGNAL RESTORED // ARCHIVE NODE 004
-
         </div>
-
-
-        <!-- =================================================
-             PLAYER
-        ================================================= -->
 
         <div class="audio-player">
 
-
             <div class="controls">
-
-                <button
-                    id="previousButton"
-                    class="control-button"
-                    title="Previous">
-                    |◀
-                </button>
-
-
-                <button
-                    id="playButton"
-                    class="control-button play-button"
-                    title="Play">
-                    ▶
-                </button>
-
-
-                <button
-                    id="nextButton"
-                    class="control-button"
-                    title="Next">
-                    ▶|
-                </button>
-
+                <button id="previousButton" class="control-button" title="Previous">|◀</button>
+                <button id="playButton" class="control-button play-button" title="Play">▶</button>
+                <button id="nextButton" class="control-button" title="Next">▶|</button>
             </div>
 
-
-            <!-- PROGRESSION -->
-
-            <div
-                id="audioProgress"
-                class="audio-progress">
-
-                <div
-                    id="audioProgressFill"
-                    class="audio-progress-fill">
-                </div>
-
+            <div id="audioProgress" class="audio-progress">
+                <div id="audioProgressFill" class="audio-progress-fill"></div>
             </div>
-
 
             <div class="time">
-
-                <span id="currentTime">
-                    00:00
-                </span>
-
-                <span id="duration">
-                    00:00
-                </span>
-
+                <span id="currentTime">00:00</span>
+                <span id="duration">00:00</span>
             </div>
 
+            <div id="trackList" class="track-list"></div>
 
-            <!-- LISTE DES TITRES -->
-
-            <div
-                id="trackList"
-                class="track-list">
-            </div>
-
+            <div id="errorMessage" class="error"></div>
 
             <div class="player-info">
-
-                NODE 004 //
-                ARCHIVE AVAILABLE //
+                NODE 004 //<br>
+                ARCHIVE AVAILABLE //<br>
                 ORIGIN UNKNOWN
-
             </div>
-
         </div>
-
     </div>
-
 </section>
 
-
-<!-- =====================================================
-     AUDIO
-===================================================== -->
-
-<audio
-    id="audio"
-    preload="metadata">
-</audio>
-
+<audio id="audio" preload="metadata"></audio>
 
 <script>
-
-
 /* =========================================================
    INTRO
 ========================================================= */
-
-const progressFill =
-    document.getElementById("progressFill");
-
-const percent =
-    document.getElementById("percent");
-
-const status =
-    document.getElementById("status");
-
-const info =
-    document.getElementById("info");
-
-const intro =
-    document.getElementById("intro");
-
-const archive =
-    document.getElementById("archive");
-
+const progressFill = document.getElementById("progressFill");
+const percent = document.getElementById("percent");
+const status = document.getElementById("status");
+const info = document.getElementById("info");
+const intro = document.getElementById("intro");
+const archive = document.getElementById("archive");
 
 const stages = [
-
-    {
-        at: 0,
-        status: "INITIALIZING",
-        info: "SEARCHING FOR SIGNAL"
-    },
-
-    {
-        at: 10,
-        status: "SCANNING",
-        info: "NOISE DETECTED"
-    },
-
-    {
-        at: 22,
-        status: "SIGNAL FOUND",
-        info: "UNKNOWN SOURCE"
-    },
-
-    {
-        at: 35,
-        status: "CONNECTING",
-        info: "NODE 004"
-    },
-
-    {
-        at: 48,
-        status: "RECONSTRUCTING",
-        info: "FRAGMENT 01 FOUND"
-    },
-
-    {
-        at: 61,
-        status: "DECODING",
-        info: "LANGUAGE UNKNOWN"
-    },
-
-    {
-        at: 74,
-        status: "RESTORING",
-        info: "MEMORY STRUCTURE STABLE"
-    },
-
-    {
-        at: 87,
-        status: "VERIFYING SIGNAL",
-        info: "INTEGRITY 92.4%"
-    },
-
-    {
-        at: 100,
-        status: "SIGNAL RESTORED",
-        info: "ARCHIVE AVAILABLE"
-    }
-
+    {at:0,  status:"INITIALIZING",      info:"SEARCHING FOR SIGNAL"},
+    {at:10, status:"SCANNING",          info:"NOISE DETECTED"},
+    {at:22, status:"SIGNAL FOUND",     info:"UNKNOWN SOURCE"},
+    {at:35, status:"CONNECTING",        info:"NODE 004"},
+    {at:48, status:"RECONSTRUCTING",    info:"FRAGMENT 01 FOUND"},
+    {at:61, status:"DECODING",          info:"LANGUAGE UNKNOWN"},
+    {at:74, status:"RESTORING",         info:"MEMORY STRUCTURE STABLE"},
+    {at:87, status:"VERIFYING SIGNAL",  info:"INTEGRITY 92.4%"},
+    {at:100,status:"SIGNAL RESTORED",   info:"ARCHIVE AVAILABLE"}
 ];
-
 
 let progress = 0;
 
+function updateSequence(){
+    progress += Math.random() * 1.4 + 0.4;
+    if(progress > 100) progress = 100;
 
-function updateSequence() {
+    progressFill.style.width = progress + "%";
+    percent.textContent = Math.floor(progress) + "%";
 
-    progress +=
-        Math.random() * 1.4 + 0.4;
-
-
-    if (progress > 100) {
-        progress = 100;
+    let currentStage = stages[0];
+    for(const stage of stages){
+        if(progress >= stage.at) currentStage = stage;
     }
 
+    status.textContent = currentStage.status;
+    info.textContent = currentStage.info;
 
-    progressFill.style.width =
-        progress + "%";
-
-
-    percent.textContent =
-        Math.floor(progress) + "%";
-
-
-    let currentStage =
-        stages[0];
-
-
-    for (
-        let i = 0;
-        i < stages.length;
-        i++
-    ) {
-
-        if (
-            progress >=
-            stages[i].at
-        ) {
-
-            currentStage =
-                stages[i];
-
-        }
-
-    }
-
-
-    status.textContent =
-        currentStage.status;
-
-
-    info.textContent =
-        currentStage.info;
-
-
-    if (progress >= 100) {
-
+    if(progress >= 100){
         setTimeout(() => {
-
             intro.classList.add("hide");
 
-
             setTimeout(() => {
-
                 archive.classList.add("show");
-
-                document.body.style.overflow =
-                    "auto";
-
+                document.body.style.overflow = "auto";
+                initializeArchive();
             }, 1800);
-
         }, 1000);
-
         return;
-
     }
 
+    setTimeout(updateSequence, 70 + Math.random() * 110);
+}
 
-    setTimeout(
-        updateSequence,
-        70 + Math.random() * 110
-    );
+setTimeout(updateSequence, 1500);
 
+
+/* =========================================================
+   PLAYER
+   IMPORTANT:
+   Les MP3 peuvent être à la racine OU dans /audio/.
+   Le code essaie d'abord audio/NOM.mp3, puis NOM.mp3.
+   Ainsi le lecteur fonctionne maintenant et continuera
+   à fonctionner lorsque tu déplaceras les MP3 dans /audio/.
+========================================================= */
+
+const audio = document.getElementById("audio");
+const playButton = document.getElementById("playButton");
+const previousButton = document.getElementById("previousButton");
+const nextButton = document.getElementById("nextButton");
+const audioProgress = document.getElementById("audioProgress");
+const audioProgressFill = document.getElementById("audioProgressFill");
+const currentTime = document.getElementById("currentTime");
+const duration = document.getElementById("duration");
+const playerTitle = document.getElementById("playerTitle");
+const trackList = document.getElementById("trackList");
+const errorMessage = document.getElementById("errorMessage");
+
+let tracks = [];
+let currentTrack = 0;
+let currentPath = "";
+let initialized = false;
+
+
+/* =========================================================
+   LISTE DES TITRES
+   On récupère automatiquement les MP3 du dépôt GitHub.
+   Cela évite d'avoir à réécrire le code chaque fois que
+   tu ajoutes un nouveau morceau.
+========================================================= */
+
+async function getRepositoryAudioFiles(){
+
+    const base =
+        "https://api.github.com/repos/iENCH-hub/iENCH-SIGNAL-RESTORED/contents/";
+
+    async function getFolder(path){
+        const response = await fetch(base + path, {
+            headers: { "Accept": "application/vnd.github+json" }
+        });
+
+        if(!response.ok) return [];
+
+        const files = await response.json();
+
+        return files
+            .filter(item =>
+                item.type === "file" &&
+                /\.mp3$/i.test(item.name)
+            )
+            .map(item => item.name);
+    }
+
+    try{
+        /*
+           On regarde les deux emplacements :
+           1. la racine du dépôt
+           2. le dossier /audio/
+
+           Ainsi tu peux laisser tes MP3 actuels à la racine,
+           puis les déplacer dans /audio/ sans refaire le code.
+        */
+        const [rootFiles, audioFiles] = await Promise.all([
+            getFolder(""),
+            getFolder("audio")
+        ]);
+
+        return [...new Set([...audioFiles, ...rootFiles])];
+
+    }catch(error){
+        console.error(error);
+        return [];
+    }
 }
 
 
-setTimeout(
-    updateSequence,
-    1500
-);
+/* =========================================================
+   NOM AFFICHÉ
+========================================================= */
+function displayTitle(filename){
+
+    return filename
+        .replace(/\.mp3$/i, "")
+        .replace(/_iENCH$/i, "")
+        .replace(/[_-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toUpperCase();
+}
 
 
 /* =========================================================
-   PLAYLIST
+   CRÉATION DES TRACKS
 ========================================================= */
+async function loadTracks(){
 
+    errorMessage.textContent = "SCANNING AUDIO ARCHIVE...";
 
-/*
- IMPORTANT :
+    const filenames = await getRepositoryAudioFiles();
 
- Les noms après "audio/" doivent correspondre
- EXACTEMENT aux noms de tes MP3 sur GitHub.
-*/
-
-
-const tracks = [
-
-    {
-        title: "OMEN NOMENSEYA TOLL",
-        file: "audio/omen-nomenseya-toll.mp3"
-    },
-
-    {
-        title: "CHAOS IN THE REVERIE",
-        file: "audio/chaos-in-the-reverie.mp3"
-    },
-
-    {
-        title: "YOHOL",
-        file: "audio/yohol.mp3"
-    },
-
-    {
-        title: "DISHUAL",
-        file: "audio/dishual.mp3"
-    },
-
-    {
-        title: "ALL OF YOU",
-        file: "audio/all-of-you.mp3"
-    },
-
-    {
-        title: "BLOOD FLOWER",
-        file: "audio/blood-flower.mp3"
+    if(!filenames.length){
+        errorMessage.textContent =
+            "NO MP3 FOUND // CHECK THE GITHUB AUDIO FILES";
+        playerTitle.textContent = "ARCHIVE EMPTY";
+        return;
     }
 
     /*
-       Ajoute ici les autres titres.
+       IMPORTANT :
+       Le chemin principal est maintenant :
+       audio/NOM EXACT DU FICHIER.mp3
 
-       Exemple :
-
-       ,{
-           title: "AUTRE TITRE",
-           file: "audio/autre-titre.mp3"
-       }
-
+       Si le MP3 est encore à la racine de GitHub,
+       le lecteur essaiera automatiquement NOM.mp3.
     */
+    tracks = filenames.map(filename => ({
+        title: displayTitle(filename),
+        filename: filename,
+        file: "audio/" + encodeURIComponent(filename),
+        fallback: encodeURIComponent(filename)
+    }));
 
-];
+    /*
+       On place OMEN NOMENSEYA TOLL en premier si présent.
+    */
+    const omenIndex = tracks.findIndex(track =>
+        track.title.includes("OMEN NOMENSEYA TOLL")
+    );
 
+    if(omenIndex > 0){
+        const omen = tracks.splice(omenIndex, 1)[0];
+        tracks.unshift(omen);
+    }
 
-/* =========================================================
-   ELEMENTS PLAYER
-========================================================= */
+    errorMessage.textContent = "";
+    currentTrack = 0;
 
-const audio =
-    document.getElementById("audio");
-
-const playButton =
-    document.getElementById("playButton");
-
-const previousButton =
-    document.getElementById("previousButton");
-
-const nextButton =
-    document.getElementById("nextButton");
-
-const audioProgress =
-    document.getElementById("audioProgress");
-
-const audioProgressFill =
-    document.getElementById("audioProgressFill");
-
-const currentTime =
-    document.getElementById("currentTime");
-
-const duration =
-    document.getElementById("duration");
-
-const playerTitle =
-    document.getElementById("playerTitle");
-
-const trackList =
-    document.getElementById("trackList");
-
-
-let currentTrack = 0;
+    createTrackList();
+    loadTrack(0);
+}
 
 
 /* =========================================================
-   AFFICHER LA PLAYLIST
+   AFFICHAGE PLAYLIST
 ========================================================= */
-
-function createTrackList() {
+function createTrackList(){
 
     trackList.innerHTML = "";
 
+    tracks.forEach((track, index) => {
 
-    tracks.forEach(
-        (track, index) => {
+        const element = document.createElement("div");
+        element.className = "track";
+        element.dataset.index = index;
 
-            const element =
-                document.createElement("div");
+        element.innerHTML = `
+            <div class="track-number">
+                ${String(index + 1).padStart(2, "0")}
+            </div>
 
+            <div class="track-name">
+                ${escapeHtml(track.title)}
+            </div>
 
-            element.className =
-                "track";
+            <div class="track-playing">
+                ${index === currentTrack ? "●" : ""}
+            </div>
+        `;
 
+        element.addEventListener("click", () => {
+            loadTrack(index);
+            playAudio();
+        });
 
-            element.dataset.index =
-                index;
+        trackList.appendChild(element);
+    });
 
-
-            element.innerHTML = `
-
-                <div class="track-number">
-                    ${String(index + 1).padStart(2, "0")}
-                </div>
-
-                <div class="track-name">
-                    ${track.title}
-                </div>
-
-                <div class="track-playing">
-                    ${index === currentTrack ? "●" : ""}
-                </div>
-
-            `;
-
-
-            element.addEventListener(
-                "click",
-                () => {
-
-                    loadTrack(index);
-
-                    playAudio();
-
-                }
-            );
+    updateTrackList();
+}
 
 
-            trackList.appendChild(element);
+/* =========================================================
+   SÉCURITÉ TEXTE
+========================================================= */
+function escapeHtml(text){
 
-        }
-    );
-
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 
 /* =========================================================
    CHARGER UN TITRE
 ========================================================= */
+function loadTrack(index){
 
-function loadTrack(index) {
+    if(index < 0 || index >= tracks.length) return;
 
-    if (
-        index < 0 ||
-        index >= tracks.length
-    ) {
+    currentTrack = index;
+    currentPath = tracks[index].file;
 
-        return;
+    audio.pause();
+    audio.currentTime = 0;
 
-    }
+    playerTitle.textContent = tracks[index].title;
 
+    audioProgressFill.style.width = "0%";
+    currentTime.textContent = "00:00";
+    duration.textContent = "00:00";
 
-    currentTrack =
-        index;
-
-
-    audio.src =
-        tracks[currentTrack].file;
-
-
-    playerTitle.textContent =
-        tracks[currentTrack].title;
-
-
+    /*
+       On commence obligatoirement par /audio/.
+    */
+    audio.src = currentPath;
     audio.load();
 
-
     updateTrackList();
-
 }
+
+
+/* =========================================================
+   SI LE FICHIER N'EST PAS ENCORE DANS /audio/
+   on essaie automatiquement le fichier à la racine.
+========================================================= */
+audio.addEventListener("error", function(){
+
+    if(!tracks.length) return;
+
+    const track = tracks[currentTrack];
+
+    if(audio.src.includes("/audio/")){
+        console.warn(
+            "Fichier absent de /audio/, essai à la racine :",
+            track.filename
+        );
+
+        audio.src = track.fallback;
+        audio.load();
+        return;
+    }
+
+    errorMessage.textContent =
+        "UNABLE TO READ // " + track.filename;
+});
 
 
 /* =========================================================
    PLAY
 ========================================================= */
+function playAudio(){
 
-function playAudio() {
+    if(!tracks.length) return;
 
     audio.play()
         .then(() => {
-
-            playButton.textContent =
-                "❚❚";
-
+            playButton.textContent = "❚❚";
         })
         .catch(error => {
-
-            console.log(
-                "Impossible de lire le fichier audio :",
-                error
-            );
-
+            console.error("Audio playback error:", error);
+            errorMessage.textContent =
+                "PLAYBACK ERROR // " + tracks[currentTrack].filename;
         });
-
 }
 
 
 /* =========================================================
    PAUSE
 ========================================================= */
-
-function pauseAudio() {
+function pauseAudio(){
 
     audio.pause();
-
-    playButton.textContent =
-        "▶";
-
+    playButton.textContent = "▶";
 }
 
 
 /* =========================================================
-   BOUTON PLAY
+   PLAY BUTTON
 ========================================================= */
+playButton.addEventListener("click", () => {
 
-playButton.addEventListener(
-    "click",
-    () => {
-
-        if (audio.paused) {
-
-            playAudio();
-
-        } else {
-
-            pauseAudio();
-
-        }
-
+    if(audio.paused){
+        playAudio();
+    }else{
+        pauseAudio();
     }
-);
+
+});
 
 
 /* =========================================================
    PREVIOUS
 ========================================================= */
+previousButton.addEventListener("click", () => {
 
-previousButton.addEventListener(
-    "click",
-    () => {
+    if(!tracks.length) return;
 
-        if (
-            audio.currentTime > 3
-        ) {
-
-            audio.currentTime = 0;
-
-            return;
-
-        }
-
-
-        currentTrack--;
-
-
-        if (
-            currentTrack < 0
-        ) {
-
-            currentTrack =
-                tracks.length - 1;
-
-        }
-
-
-        loadTrack(currentTrack);
-
-        playAudio();
-
+    if(audio.currentTime > 3){
+        audio.currentTime = 0;
+        return;
     }
-);
+
+    currentTrack--;
+
+    if(currentTrack < 0){
+        currentTrack = tracks.length - 1;
+    }
+
+    loadTrack(currentTrack);
+    playAudio();
+
+});
 
 
 /* =========================================================
    NEXT
 ========================================================= */
+nextButton.addEventListener("click", () => {
 
-nextButton.addEventListener(
-    "click",
-    () => {
+    if(!tracks.length) return;
 
-        currentTrack++;
+    currentTrack++;
 
-
-        if (
-            currentTrack >= tracks.length
-        ) {
-
-            currentTrack = 0;
-
-        }
-
-
-        loadTrack(currentTrack);
-
-        playAudio();
-
+    if(currentTrack >= tracks.length){
+        currentTrack = 0;
     }
-);
+
+    loadTrack(currentTrack);
+    playAudio();
+
+});
 
 
 /* =========================================================
    TITRE SUIVANT AUTOMATIQUE
 ========================================================= */
+audio.addEventListener("ended", () => {
 
-audio.addEventListener(
-    "ended",
-    () => {
+    if(!tracks.length) return;
 
-        currentTrack++;
+    currentTrack++;
 
-
-        if (
-            currentTrack >= tracks.length
-        ) {
-
-            currentTrack = 0;
-
-        }
-
-
-        loadTrack(currentTrack);
-
-        playAudio();
-
+    if(currentTrack >= tracks.length){
+        currentTrack = 0;
     }
-);
+
+    loadTrack(currentTrack);
+    playAudio();
+
+});
 
 
 /* =========================================================
    PROGRESSION
 ========================================================= */
+audio.addEventListener("timeupdate", () => {
 
-audio.addEventListener(
-    "timeupdate",
-    () => {
+    if(!audio.duration || !isFinite(audio.duration)) return;
 
-        if (
-            !audio.duration
-        ) {
+    const percentage =
+        (audio.currentTime / audio.duration) * 100;
 
-            return;
+    audioProgressFill.style.width = percentage + "%";
+    currentTime.textContent = formatTime(audio.currentTime);
 
-        }
-
-
-        const percentage =
-            (
-                audio.currentTime /
-                audio.duration
-            ) * 100;
-
-
-        audioProgressFill.style.width =
-            percentage + "%";
-
-
-        currentTime.textContent =
-            formatTime(
-                audio.currentTime
-            );
-
-    }
-);
+});
 
 
 /* =========================================================
-   DUREE
+   DURÉE
 ========================================================= */
+audio.addEventListener("loadedmetadata", () => {
 
-audio.addEventListener(
-    "loadedmetadata",
-    () => {
-
-        duration.textContent =
-            formatTime(
-                audio.duration
-            );
-
+    if(isFinite(audio.duration)){
+        duration.textContent = formatTime(audio.duration);
     }
-);
+
+});
 
 
 /* =========================================================
-   CLIC SUR BARRE
+   BARRE DE PROGRESSION
 ========================================================= */
+audioProgress.addEventListener("click", event => {
 
-audioProgress.addEventListener(
-    "click",
-    (event) => {
+    if(!audio.duration || !isFinite(audio.duration)) return;
 
-        if (
-            !audio.duration
-        ) {
+    const rect = audioProgress.getBoundingClientRect();
 
-            return;
+    const clickPosition =
+        event.clientX - rect.left;
 
-        }
+    const percentage =
+        Math.max(0, Math.min(1, clickPosition / rect.width));
 
+    audio.currentTime =
+        percentage * audio.duration;
 
-        const rect =
-            audioProgress.getBoundingClientRect();
-
-
-        const clickPosition =
-            event.clientX -
-            rect.left;
-
-
-        const percentage =
-            clickPosition /
-            rect.width;
-
-
-        audio.currentTime =
-            percentage *
-            audio.duration;
-
-    }
-);
+});
 
 
 /* =========================================================
    FORMAT TEMPS
 ========================================================= */
+function formatTime(seconds){
 
-function formatTime(seconds) {
-
-    if (
-        isNaN(seconds)
-    ) {
-
+    if(isNaN(seconds) || !isFinite(seconds)){
         return "00:00";
-
     }
 
-
     const minutes =
-        Math.floor(
-            seconds / 60
-        );
-
+        Math.floor(seconds / 60);
 
     const secs =
-        Math.floor(
-            seconds % 60
-        );
-
+        Math.floor(seconds % 60);
 
     return (
-        String(minutes).padStart(2, "0")
-        +
-        ":"
-        +
+        String(minutes).padStart(2, "0") +
+        ":" +
         String(secs).padStart(2, "0")
     );
 
@@ -1722,44 +886,29 @@ function formatTime(seconds) {
 
 
 /* =========================================================
-   MISE A JOUR LISTE
+   MISE À JOUR PLAYLIST
 ========================================================= */
-
-function updateTrackList() {
+function updateTrackList(){
 
     const elements =
         document.querySelectorAll(".track");
 
+    elements.forEach((element, index) => {
 
-    elements.forEach(
-        (element, index) => {
+        element.classList.toggle(
+            "active",
+            index === currentTrack
+        );
 
-            if (
-                index === currentTrack
-            ) {
+        const playing =
+            element.querySelector(".track-playing");
 
-                element.classList.add(
-                    "active"
-                );
-
-                element.querySelector(
-                    ".track-playing"
-                ).textContent = "●";
-
-            } else {
-
-                element.classList.remove(
-                    "active"
-                );
-
-                element.querySelector(
-                    ".track-playing"
-                ).textContent = "";
-
-            }
-
+        if(playing){
+            playing.textContent =
+                index === currentTrack ? "●" : "";
         }
-    );
+
+    });
 
 }
 
@@ -1767,12 +916,15 @@ function updateTrackList() {
 /* =========================================================
    INITIALISATION
 ========================================================= */
+async function initializeArchive(){
 
-createTrackList();
+    if(initialized) return;
 
-loadTrack(0);
+    initialized = true;
 
+    await loadTracks();
 
+}
 </script>
 
 </body>
