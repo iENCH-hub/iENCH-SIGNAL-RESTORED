@@ -96,6 +96,86 @@ body{overflow:hidden}
     color:#64776a;
 }
 
+/* ================= ARCHIVE SLIDESHOW ================= */
+#archive::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(255,72,0,.12), transparent 34%),
+        linear-gradient(180deg, rgba(0,0,0,.42), rgba(0,0,0,.72));
+    pointer-events:none;
+}
+.archive-slideshow{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+.slide-photo{
+    position:absolute;
+    width:clamp(260px, 32vw, 520px);
+    height:clamp(190px, 25vw, 380px);
+    object-fit:cover;
+    opacity:0;
+    border:1px solid rgba(184,211,191,.16);
+    box-shadow:0 0 35px rgba(0,0,0,.65), 0 0 45px rgba(255,70,0,.08);
+    filter:saturate(.72) contrast(1.08) brightness(.55);
+    transition:opacity 2.4s ease, transform 8s cubic-bezier(.2,.7,.2,1), filter 2s ease;
+    mix-blend-mode:screen;
+}
+.slide-photo::after{content:""}
+.slide-photo.visible{opacity:.38;filter:saturate(.78) contrast(1.08) brightness(.62)}
+.slide-photo.s1{left:3%;top:10%;transform:rotate(-7deg) scale(1.04)}
+.slide-photo.s2{right:4%;top:8%;transform:rotate(5deg) scale(.96)}
+.slide-photo.s3{left:10%;bottom:8%;transform:rotate(4deg) scale(.92)}
+.slide-photo.s4{right:9%;bottom:7%;transform:rotate(-6deg) scale(1.05)}
+.slide-photo.s5{left:34%;top:4%;transform:rotate(-2deg) scale(.82);opacity:.20}
+.slide-photo.s6{right:30%;bottom:2%;transform:rotate(3deg) scale(.88);opacity:.18}
+.slide-photo.s7{left:28%;top:28%;transform:rotate(-10deg) scale(.72);opacity:.12}
+.slide-photo.s8{right:26%;top:31%;transform:rotate(9deg) scale(.70);opacity:.12}
+.slide-photo.visible.s1{transform:rotate(-5deg) scale(1.12) translate(20px,-8px)}
+.slide-photo.visible.s2{transform:rotate(4deg) scale(1.04) translate(-18px,14px)}
+.slide-photo.visible.s3{transform:rotate(3deg) scale(1.02) translate(-12px,-16px)}
+.slide-photo.visible.s4{transform:rotate(-4deg) scale(1.12) translate(16px,10px)}
+.slide-photo.visible.s5{transform:rotate(2deg) scale(.94) translate(-18px,10px)}
+.slide-photo.visible.s6{transform:rotate(-2deg) scale(1.0) translate(15px,-8px)}
+.slide-photo.visible.s7{transform:rotate(-6deg) scale(.84) translate(-10px,12px)}
+.slide-photo.visible.s8{transform:rotate(6deg) scale(.82) translate(12px,-10px)}
+.slideshow-noise{
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.07) .6px, transparent .6px);
+    background-size:4px 4px;
+    opacity:.06;
+    mix-blend-mode:screen;
+}
+/* The player stays clearly above the moving photographs. */
+#archive .player{position:relative;z-index:10}
+#archive .player::before{
+    content:"";
+    position:absolute;
+    inset:-90px -110px;
+    z-index:-1;
+    background:radial-gradient(ellipse at center, rgba(0,0,0,.88) 0%, rgba(0,0,0,.66) 42%, rgba(0,0,0,.18) 72%, transparent 100%);
+    pointer-events:none;
+}
+@media(max-width:900px){
+    .slide-photo{width:42vw;height:31vw;opacity:.16}
+    .slide-photo.visible{opacity:.22}
+    .slide-photo.s5,.slide-photo.s6,.slide-photo.s7,.slide-photo.s8{display:none}
+}
+@media(max-width:600px){
+    .slide-photo{width:52vw;height:39vw}
+    .slide-photo.s1{left:-12%;top:8%}
+    .slide-photo.s2{right:-13%;top:10%}
+    .slide-photo.s3{left:-8%;bottom:9%}
+    .slide-photo.s4{right:-10%;bottom:8%}
+    #archive .player::before{inset:-45px -35px}
+}
+
 /* ================= ARCHIVE ================= */
 #archive{
     position:fixed;
@@ -324,6 +404,18 @@ body{overflow:hidden}
 </section>
 
 <section id="archive">
+    <div id="archiveSlideshow" class="archive-slideshow" aria-hidden="true">
+        <img class="slide-photo s1" alt="">
+        <img class="slide-photo s2" alt="">
+        <img class="slide-photo s3" alt="">
+        <img class="slide-photo s4" alt="">
+        <img class="slide-photo s5" alt="">
+        <img class="slide-photo s6" alt="">
+        <img class="slide-photo s7" alt="">
+        <img class="slide-photo s8" alt="">
+        <div class="slideshow-noise"></div>
+    </div>
+
     <div class="player">
 
         <div class="player-symbol">
@@ -883,6 +975,102 @@ function updateTrackList(){
 
 
 /* =========================================================
+   ÉTRANGE DIAPORAMA // ARCHIVE VISUELLE
+   Les images sont récupérées automatiquement depuis GitHub.
+   Le lecteur reste au-dessus, lisible et stable.
+========================================================= */
+const slideshow = document.getElementById("archiveSlideshow");
+const slideElements = slideshow ? Array.from(slideshow.querySelectorAll(".slide-photo")) : [];
+let slideshowImages = [];
+let slideshowTimer = null;
+let slideshowIndex = 0;
+
+async function getRepositoryImageFiles(){
+    const base = "https://api.github.com/repos/iENCH-hub/iENCH-SIGNAL-RESTORED/contents/";
+
+    async function getFolder(path){
+        try{
+            const response = await fetch(base + path, {
+                headers:{"Accept":"application/vnd.github+json"}
+            });
+            if(!response.ok) return [];
+            const files = await response.json();
+            return files
+                .filter(item => item.type === "file" && /\.(jpg|jpeg|png|webp|gif)$/i.test(item.name))
+                .map(item => ({name:item.name, path:item.path}));
+        }catch(e){
+            return [];
+        }
+    }
+
+    const [root, images] = await Promise.all([
+        getFolder(""),
+        getFolder("images")
+    ]);
+
+    const all = [...root, ...images];
+    const unique = [];
+    const seen = new Set();
+
+    for(const item of all){
+        /* Le logo reste réservé au logo animé, pas au diaporama. */
+        if(item.name.toLowerCase() === "ienchlogo.jpg") continue;
+        if(seen.has(item.path)) continue;
+        seen.add(item.path);
+        unique.push(item);
+    }
+
+    return unique;
+}
+
+function shuffleArray(array){
+    const copy = [...array];
+    for(let i=copy.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [copy[i],copy[j]]=[copy[j],copy[i]];
+    }
+    return copy;
+}
+
+function startSlideshow(){
+    if(!slideElements.length || !slideshowImages.length) return;
+
+    slideshowImages = shuffleArray(slideshowImages);
+
+    /* Plusieurs images restent simultanément visibles. */
+    slideElements.forEach((img,index)=>{
+        const item = slideshowImages[index % slideshowImages.length];
+        img.src = "https://raw.githubusercontent.com/iENCH-hub/iENCH-SIGNAL-RESTORED/main/" +
+            item.path.split("/").map(encodeURIComponent).join("/");
+        img.classList.remove("visible");
+        setTimeout(()=>img.classList.add("visible"), 100 + index*240);
+    });
+
+    slideshowIndex = slideElements.length % slideshowImages.length;
+
+    clearInterval(slideshowTimer);
+    slideshowTimer = setInterval(()=>{
+        const slot = Math.floor(Math.random()*slideElements.length);
+        const img = slideElements[slot];
+        const item = slideshowImages[slideshowIndex % slideshowImages.length];
+        slideshowIndex++;
+
+        img.classList.remove("visible");
+
+        setTimeout(()=>{
+            img.src = "https://raw.githubusercontent.com/iENCH-hub/iENCH-SIGNAL-RESTORED/main/" +
+                item.path.split("/").map(encodeURIComponent).join("/");
+            requestAnimationFrame(()=>img.classList.add("visible"));
+        }, 1200);
+    }, 3800);
+}
+
+async function initializeSlideshow(){
+    slideshowImages = await getRepositoryImageFiles();
+    if(slideshowImages.length) startSlideshow();
+}
+
+/* =========================================================
    INITIALISATION
 ========================================================= */
 async function initializeArchive(){
@@ -892,6 +1080,7 @@ async function initializeArchive(){
     initialized = true;
 
     await loadTracks();
+    initializeSlideshow();
 
 }
 </script>
