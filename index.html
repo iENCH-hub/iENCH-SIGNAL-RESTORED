@@ -2414,25 +2414,13 @@ function createRadialTrackList(){
                 y + "%";
 
 
-            const number =
-                document.createElement("div");
-
-            number.className =
-                "radial-track-number";
-
-            number.textContent =
-                String(index + 1)
-                    .padStart(2,"0");
-
-
             const glyph =
                 document.createElement("img");
 
             glyph.className =
                 "radial-track-glyph";
 
-            glyph.src =
-                track.glyph;
+            glyph.src = "glyphes/glyphe" + ((index % 10) + 1) + ".png";
 
             glyph.alt =
                 "";
@@ -2460,11 +2448,6 @@ function createRadialTrackList(){
 
             name.textContent =
                 track.title;
-
-
-            element.appendChild(
-                number
-            );
 
             element.appendChild(
                 glyph
@@ -3375,3 +3358,16 @@ async function initializeArchive(){
 
 </body>
 </html>
+<style>
+.radial-track-number{display:none !important;}
+</style>
+
+<style>
+.radial-track-glyph{
+    display:block;
+    margin:0 auto -5px !important;
+}
+.radial-track-name{
+    margin-top:0 !important;
+}
+</style>
