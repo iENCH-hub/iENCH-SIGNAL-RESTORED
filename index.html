@@ -268,18 +268,24 @@ body{overflow:hidden}
 }
 
 .archive-background-logo{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:min(980px,78vw);
-    height:min(980px,78vw);
-    transform:translate(-50%,-50%);
-    object-fit:contain;
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    object-fit:cover;
     object-position:center center;
-    opacity:.72;
-    mix-blend-mode:screen;
-    pointer-events:none;
     z-index:0;
+    opacity:.78;
+    filter:
+        brightness(.72)
+        contrast(1.12)
+        saturate(1.08)
+        drop-shadow(0 0 25px rgba(255,80,0,.35));
+    transform:scale(1.015);
+    animation:
+        backgroundLogoBreath 12s ease-in-out infinite,
+        backgroundLogoFlicker 7s ease-in-out infinite;
+    pointer-events:none;
 }
 
 .logo-background-glow{
@@ -975,20 +981,20 @@ body{overflow:hidden}
     position:absolute;
     left:50%;
     top:50%;
-    width:1605px;
-    height:165px;
+    width:178px;
+    height:252px;
     max-width:none;
-    transform:translate(-50%,-50%);
-    object-fit:contain;
-    object-position:center;
+    transform:translate(-50%,-44%);
+    object-fit:cover;
+    object-position:50% 44%;
     border-radius:0;
     mix-blend-mode:screen;
     opacity:1;
     filter:
         brightness(1.08)
-        contrast(1.16)
-        saturate(1.10)
-        drop-shadow(0 0 4px rgba(255,100,0,.55));
+        contrast(1.18)
+        saturate(1.12)
+        drop-shadow(0 0 5px rgba(255,100,0,.65));
 }
 
 .player-title{
@@ -1530,7 +1536,7 @@ body{overflow:hidden}
     <div class="symbol">
 
         <img
-            src="ienchlogo.jpg"
+            src="ienchlogo.png"
             class="logo-image"
             alt="iENCH"
         >
@@ -1579,7 +1585,7 @@ body{overflow:hidden}
 <section id="archive">
 
     <img
-        src="ienchlogo.jpg"
+        src="ienchlogo.png"
         class="archive-background-logo"
         alt=""
         aria-hidden="true"
@@ -1868,7 +1874,7 @@ let progress = 0;
 
 function updateSequence(){
 
-    progress += Math.random() * 2.2 + 0.7;
+    progress += Math.random() * 2.8 + 0.9;
 
     if(progress > 100){
         progress = 100;
@@ -1927,7 +1933,7 @@ function updateSequence(){
 
     setTimeout(
         updateSequence,
-        50 + Math.random() * 80
+        40 + Math.random() * 65
     );
 
 }
@@ -2080,19 +2086,29 @@ async function loadTracks(){
         "SCANNING AUDIO ARCHIVE...";
 
 
-    const filenames =
+    let filenames =
         await getRepositoryAudioFiles();
 
 
+    /*
+       IMPORTANT :
+       Les traits, petits cercles, titres et glyphes sont construits
+       à partir de cette liste. Si l'API GitHub est temporairement
+       indisponible ou limitée, on utilise cette liste de secours
+       afin que le lecteur radial reste toujours affiché.
+    */
     if(!filenames.length){
 
-        errorMessage.textContent =
-            "NO MP3 FOUND // CHECK THE GITHUB AUDIO FILES";
+        filenames = [
+            "OMEN NOMENSEYA TOLL.mp3",
+            "CHAOS IN THE REVERIE.mp3",
+            "YOHOL.mp3",
+            "DISHUAL.mp3",
+            "ALL OF YOU.mp3",
+            "BLOOD FLOWER.mp3"
+        ];
 
-        playerTitle.textContent =
-            "ARCHIVE EMPTY";
-
-        return;
+        errorMessage.textContent = "";
 
     }
 
@@ -2414,13 +2430,25 @@ function createRadialTrackList(){
                 y + "%";
 
 
+            const number =
+                document.createElement("div");
+
+            number.className =
+                "radial-track-number";
+
+            number.textContent =
+                String(index + 1)
+                    .padStart(2,"0");
+
+
             const glyph =
                 document.createElement("img");
 
             glyph.className =
                 "radial-track-glyph";
 
-            glyph.src = "glyphes/glyphe" + ((index % 10) + 1) + ".png";
+            glyph.src =
+                track.glyph;
 
             glyph.alt =
                 "";
@@ -2448,6 +2476,11 @@ function createRadialTrackList(){
 
             name.textContent =
                 track.title;
+
+
+            element.appendChild(
+                number
+            );
 
             element.appendChild(
                 glyph
@@ -3110,7 +3143,7 @@ async function getRepositoryImageFiles(){
 
         if(
             item.name.toLowerCase() ===
-            "ienchlogo.jpg"
+            "ienchlogo.png"
         ){
             continue;
         }
@@ -3359,15 +3392,9 @@ async function initializeArchive(){
 </body>
 </html>
 <style>
-.radial-track-number{display:none !important;}
-</style>
-
-<style>
 .radial-track-glyph{
-    display:block;
-    margin:0 auto -5px !important;
-}
-.radial-track-name{
-    margin-top:0 !important;
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
 }
 </style>
