@@ -134,8 +134,8 @@ body{overflow:hidden}
 .logo-image{
     position:absolute;
     z-index:2;
-    width:455px;
-    height:455px;
+    width:453px;
+    height:453px;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
@@ -326,136 +326,6 @@ body{overflow:hidden}
 }
 
 
-/* ================= DIAPORAMA ================= */
-
-.archive-slideshow{
-    position:fixed;
-    inset:0;
-    z-index:3;
-    overflow:hidden;
-    pointer-events:none;
-    opacity:.34;
-    mix-blend-mode:screen;
-}
-
-.slide-photo{
-    position:absolute;
-    width:clamp(220px,26vw,430px);
-    height:clamp(160px,20vw,320px);
-    object-fit:cover;
-    opacity:0;
-    border:1px solid rgba(255,120,40,.16);
-    box-shadow:0 0 35px rgba(0,0,0,.7);
-    filter:
-        saturate(.55)
-        contrast(1.08)
-        brightness(.45);
-    transition:
-        opacity 2.8s ease,
-        transform 10s cubic-bezier(.2,.7,.2,1),
-        filter 2.4s ease;
-}
-
-.slide-photo.visible{
-    opacity:.34;
-    filter:
-        saturate(.62)
-        contrast(1.08)
-        brightness(.50);
-}
-
-.slide-photo.s1{
-    left:1%;
-    top:6%;
-    transform:rotate(-8deg) scale(1.02);
-}
-
-.slide-photo.s2{
-    right:1%;
-    top:5%;
-    transform:rotate(7deg) scale(.98);
-}
-
-.slide-photo.s3{
-    left:5%;
-    bottom:5%;
-    transform:rotate(5deg) scale(.95);
-}
-
-.slide-photo.s4{
-    right:5%;
-    bottom:4%;
-    transform:rotate(-7deg) scale(1.02);
-}
-
-.slide-photo.s5{
-    left:24%;
-    top:1%;
-    transform:rotate(-3deg) scale(.75);
-}
-
-.slide-photo.s6{
-    right:24%;
-    bottom:0%;
-    transform:rotate(4deg) scale(.78);
-}
-
-.slide-photo.s7{
-    left:10%;
-    top:35%;
-    transform:rotate(-11deg) scale(.68);
-}
-
-.slide-photo.s8{
-    right:10%;
-    top:33%;
-    transform:rotate(10deg) scale(.68);
-}
-
-.slide-photo.visible.s1{
-    transform:rotate(-5deg) scale(1.10) translate(24px,-10px);
-}
-
-.slide-photo.visible.s2{
-    transform:rotate(4deg) scale(1.06) translate(-22px,14px);
-}
-
-.slide-photo.visible.s3{
-    transform:rotate(3deg) scale(1.03) translate(-15px,-18px);
-}
-
-.slide-photo.visible.s4{
-    transform:rotate(-4deg) scale(1.10) translate(18px,12px);
-}
-
-.slide-photo.visible.s5{
-    transform:rotate(2deg) scale(.88) translate(-18px,12px);
-}
-
-.slide-photo.visible.s6{
-    transform:rotate(-2deg) scale(.91) translate(16px,-10px);
-}
-
-.slide-photo.visible.s7{
-    transform:rotate(-7deg) scale(.80) translate(-10px,14px);
-}
-
-.slide-photo.visible.s8{
-    transform:rotate(7deg) scale(.80) translate(12px,-12px);
-}
-
-.slideshow-noise{
-    position:absolute;
-    inset:0;
-    background-image:
-        radial-gradient(
-            rgba(255,255,255,.07) .6px,
-            transparent .6px
-        );
-    background-size:4px 4px;
-    opacity:.055;
-    mix-blend-mode:screen;
-}
 
 
 /* ================= ARCHIVE ================= */
@@ -981,10 +851,10 @@ body{overflow:hidden}
     position:absolute;
     left:50%;
     top:50%;
-    width:178px;
-    height:252px;
+    width:110px;
+    height:110px;
     max-width:none;
-    transform:translate(-50%,-44%);
+    transform:translate(-50%,-53%);
     object-fit:cover;
     object-position:50% 44%;
     border-radius:0;
@@ -1602,26 +1472,8 @@ body{overflow:hidden}
     ></div>
 
 
-    <!-- ================= DIAPORAMA ================= -->
+   
 
-    <div
-        id="archiveSlideshow"
-        class="archive-slideshow"
-        aria-hidden="true"
-    >
-
-        <img class="slide-photo s1" alt="">
-        <img class="slide-photo s2" alt="">
-        <img class="slide-photo s3" alt="">
-        <img class="slide-photo s4" alt="">
-        <img class="slide-photo s5" alt="">
-        <img class="slide-photo s6" alt="">
-        <img class="slide-photo s7" alt="">
-        <img class="slide-photo s8" alt="">
-
-        <div class="slideshow-noise"></div>
-
-    </div>
 
 
     <!-- ================= PLAYER ================= -->
@@ -3035,29 +2887,7 @@ function updateRadialTrackStates(){
 }
 
 
-/* =========================================================
-   DIAPORAMA
-========================================================= */
 
-const slideshow =
-    document.getElementById(
-        "archiveSlideshow"
-    );
-
-
-const slideElements =
-    slideshow
-        ? Array.from(
-            slideshow.querySelectorAll(
-                ".slide-photo"
-            )
-        )
-        : [];
-
-
-let slideshowImages = [];
-let slideshowTimer = null;
-let slideshowIndex = 0;
 
 
 /* =========================================================
@@ -3216,155 +3046,6 @@ function shuffleArray(array){
 }
 
 
-/* =========================================================
-   START DIAPORAMA
-========================================================= */
-
-function startSlideshow(){
-
-    if(
-        !slideElements.length ||
-        !slideshowImages.length
-    ){
-        return;
-    }
-
-
-    slideshowImages =
-        shuffleArray(
-            slideshowImages
-        );
-
-
-    slideElements.forEach(
-        (img,index)=>{
-
-            const item =
-                slideshowImages[
-                    index %
-                    slideshowImages.length
-                ];
-
-
-            img.src =
-                "https://raw.githubusercontent.com/iENCH-hub/iENCH-SIGNAL-RESTORED/main/" +
-                item.path
-                    .split("/")
-                    .map(
-                        encodeURIComponent
-                    )
-                    .join("/");
-
-
-            img.classList.remove(
-                "visible"
-            );
-
-
-            setTimeout(
-                ()=>{
-                    img.classList.add(
-                        "visible"
-                    );
-                },
-                100 + index * 240
-            );
-
-        }
-    );
-
-
-    slideshowIndex =
-        slideElements.length %
-        slideshowImages.length;
-
-
-    clearInterval(
-        slideshowTimer
-    );
-
-
-    slideshowTimer =
-        setInterval(
-            ()=>{
-
-                const slot =
-                    Math.floor(
-                        Math.random() *
-                        slideElements.length
-                    );
-
-
-                const img =
-                    slideElements[slot];
-
-
-                const item =
-                    slideshowImages[
-                        slideshowIndex %
-                        slideshowImages.length
-                    ];
-
-
-                slideshowIndex++;
-
-
-                img.classList.remove(
-                    "visible"
-                );
-
-
-                setTimeout(
-                    ()=>{
-
-                        img.src =
-                            "https://raw.githubusercontent.com/iENCH-hub/iENCH-SIGNAL-RESTORED/main/" +
-                            item.path
-                                .split("/")
-                                .map(
-                                    encodeURIComponent
-                                )
-                                .join("/");
-
-
-                        requestAnimationFrame(
-                            ()=>{
-                                img.classList.add(
-                                    "visible"
-                                );
-                            }
-                        );
-
-                    },
-                    1200
-                );
-
-            },
-            3800
-        );
-
-}
-
-
-/* =========================================================
-   INITIALISATION DIAPORAMA
-========================================================= */
-
-async function initializeSlideshow(){
-
-    slideshowImages =
-        await getRepositoryImageFiles();
-
-
-    if(
-        slideshowImages.length
-    ){
-
-        startSlideshow();
-
-    }
-
-}
 
 
 /* =========================================================
