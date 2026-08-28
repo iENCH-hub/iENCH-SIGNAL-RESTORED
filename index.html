@@ -1281,86 +1281,169 @@ body{overflow:hidden}
 
 @media(max-width:720px){
 
+    html,body{
+        width:100%;
+        height:100%;
+        overflow:hidden;
+    }
+
     #archive{
-        overflow:auto;
+        overflow:hidden;
+        align-items:center;
+        justify-content:center;
     }
 
     .player{
         width:100vw;
-        height:100vh;
-        min-height:700px;
+        height:100dvh;
+        min-height:0;
+        overflow:visible;
     }
 
+    /* La roue utilise réellement la largeur du téléphone :
+       plus de roue 980px réduite artificiellement. */
     .radial-player{
-        width:980px;
-        height:980px;
-        min-width:980px;
-        min-height:980px;
-        transform:scale(.70);
+        width:min(96vw,96dvh);
+        height:min(96vw,96dvh);
+        min-width:0;
+        min-height:0;
+        transform:none;
+        flex:0 0 auto;
     }
 
     .radial-track{
-        width:150px;
+        width:108px;
+        min-height:48px;
+        padding:1px 2px;
     }
 
     .radial-track-name{
-        font-size:10px;
+        font-size:9px;
+        line-height:1.05;
+        letter-spacing:.035em;
+        overflow-wrap:anywhere;
     }
 
     .radial-track-glyph{
-        width:42px;
-        height:42px;
-    }
-}
-
-@media(max-width:600px){
-
-    .player{
-        width:95vw;
+        width:34px;
+        height:34px;
+        margin:0 auto -2px;
     }
 
-    .symbol{
-        width:300px;
-        height:300px;
+    /* Centre adapté à la petite taille de la roue */
+    .radial-center{
+        width:48%;
+        height:48%;
     }
 
-    .symbol::after{
-        width:270px;
-        height:270px;
+    .center-sigil{
+        width:58px;
+        height:58px;
+        margin-bottom:7px;
     }
 
-    .logo-image{
-        width:380px;
-        height:380px;
+    .center-sigil::before{
+        inset:5px;
     }
 
-    .player-symbol{
-        width:105px;
-        height:105px;
-    }
-
-    .player-symbol::before{
-        width:100px;
-        height:100px;
-    }
-
-    .player-symbol::after{
-        width:70px;
-        height:70px;
-    }
-
-    .player-logo{
-        width:45px;
-        height:45px;
-    }
-
-    .audio-player{
-        padding:18px;
+    .center-sigil img{
+        width:76px;
+        height:76px;
     }
 
     .player-title{
-        font-size:13px;
-        letter-spacing:.2em;
+        max-width:88%;
+        font-size:10px;
+        line-height:1.05;
+        letter-spacing:.055em;
+        margin-bottom:5px;
+    }
+
+    .radial-controls{
+        gap:4px;
+        margin-bottom:5px;
+    }
+
+    .control-button{
+        width:28px;
+        height:28px;
+        font-size:12px;
+    }
+
+    .play-button{
+        width:36px;
+        height:36px;
+        font-size:14px;
+    }
+
+    .audio-progress,
+    .time{
+        width:70%;
+    }
+
+    .time{
+        margin-top:4px;
+        font-size:7px;
+    }
+
+    .player-info{
+        bottom:-5%;
+        font-size:6px;
+        letter-spacing:.12em;
+    }
+
+    /* Intro verticale */
+    .symbol{
+        width:min(78vw,300px);
+        height:min(78vw,300px);
+        margin-bottom:20px;
+    }
+
+    .symbol::after{
+        width:88%;
+        height:88%;
+    }
+
+    .logo-image{
+        width:126%;
+        height:126%;
+    }
+
+    .logo{
+        font-size:32px;
+    }
+
+    .status{
+        margin-top:35px;
+    }
+
+    .progress-wrapper{
+        width:78vw;
+    }
+
+    /* Décor moins envahissant */
+    .glyph{
+        width:42px;
+        height:42px;
+        opacity:.22;
+    }
+
+    .archive-background-logo{
+        width:100vw;
+        height:100vh;
+        object-fit:cover;
+    }
+}
+
+@media(max-width:420px){
+
+    .radial-player{
+        width:min(98vw,92dvh);
+        height:min(98vw,92dvh);
+    }
+
+    .radial-track{
+        width:92px;
     }
 
     .radial-track-name{
@@ -1368,15 +1451,31 @@ body{overflow:hidden}
     }
 
     .radial-track-glyph{
-        width:40px;
-        height:40px;
+        width:30px;
+        height:30px;
     }
 
-    .glyph{
-        width:55px;
-        height:55px;
+    .radial-center{
+        width:50%;
+        height:50%;
+    }
+
+    .center-sigil{
+        width:52px;
+        height:52px;
+        margin-bottom:5px;
+    }
+
+    .center-sigil img{
+        width:70px;
+        height:70px;
+    }
+
+    .player-title{
+        font-size:9px;
     }
 }
+
 </style>
 </head>
 
@@ -2077,16 +2176,21 @@ function createRadialTrackList(){
     const cy = 500;
 
 
+    const isMobile =
+        window.matchMedia("(max-width:720px)").matches;
+
     const labelRadius =
-        count <= 10
-            ? 440
-            : count <= 14
-                ? 452
-                : 462;
+        isMobile
+            ? (window.innerWidth <= 420 ? 350 : 365)
+            : count <= 10
+                ? 440
+                : count <= 14
+                    ? 452
+                    : 462;
 
 
     const nodeRadius =
-        315;
+        isMobile ? 285 : 315;
 
 
     tracks.forEach(
@@ -3067,6 +3171,18 @@ async function initializeArchive(){
     initializeSlideshow();
 
 }
+
+
+let radialResizeTimer = null;
+window.addEventListener("resize",()=>{
+    clearTimeout(radialResizeTimer);
+    radialResizeTimer = setTimeout(()=>{
+        if(tracks.length){
+            createRadialTrackList();
+            updateRadialActiveState();
+        }
+    },120);
+});
 
 </script>
 
