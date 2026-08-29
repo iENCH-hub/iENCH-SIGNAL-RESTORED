@@ -1735,6 +1735,13 @@ body{overflow:hidden}
     preload="metadata"
 ></audio>
 
+<audio
+    id="backgroundAudio"
+    src="audio/background.mp3"
+    preload="auto"
+    loop
+></audio>
+
 
 <script>
 
@@ -1899,6 +1906,34 @@ setTimeout(updateSequence, 700);
 
 const audio =
     document.getElementById("audio");
+
+const backgroundAudio =
+    document.getElementById("backgroundAudio");
+
+backgroundAudio.volume = 0.32;
+
+function startBackgroundAudio(){
+    if(!audio.paused){
+        return;
+    }
+
+    backgroundAudio.play().catch(()=>{});
+}
+
+function stopBackgroundAudio(){
+    backgroundAudio.pause();
+}
+
+/* tentative immédiate + démarrage au premier geste si autoplay bloqué */
+startBackgroundAudio();
+
+["click","touchstart","keydown"].forEach(eventName=>{
+    document.addEventListener(
+        eventName,
+        startBackgroundAudio,
+        {once:true}
+    );
+});
 
 const playButton =
     document.getElementById("playButton");
@@ -2600,6 +2635,8 @@ function playAudio(){
     audio.play()
         .then(()=>{
 
+            stopBackgroundAudio();
+
             playButton.textContent =
                 "❚❚";
 
@@ -2633,6 +2670,8 @@ function playAudio(){
 function pauseAudio(){
 
     audio.pause();
+
+    startBackgroundAudio();
 
     playButton.textContent =
         "▶";
