@@ -1912,28 +1912,54 @@ const backgroundAudio =
 
 backgroundAudio.volume = 0.32;
 
+let backgroundUnlocked = false;
+
 function startBackgroundAudio(){
+
+    /* Ne jamais superposer le fond à un titre */
     if(!audio.paused){
         return;
     }
 
-    backgroundAudio.play().catch(()=>{});
+    backgroundAudio.play()
+        .then(()=>{
+            backgroundUnlocked = true;
+        })
+        .catch(()=>{
+            /* L'autoplay avec son est souvent bloqué.
+               Le premier geste utilisateur le débloquera. */
+        });
 }
 
 function stopBackgroundAudio(){
     backgroundAudio.pause();
 }
 
-/* tentative immédiate + démarrage au premier geste si autoplay bloqué */
+/* 1. Essai autoplay dès le chargement */
 startBackgroundAudio();
 
-["click","touchstart","keydown"].forEach(eventName=>{
-    document.addEventListener(
-        eventName,
-        startBackgroundAudio,
-        {once:true}
-    );
-});
+/* 2. Si le navigateur bloque l'autoplay :
+      démarrage garanti au premier geste utilisateur. */
+function unlockBackgroundAudio(){
+
+    if(backgroundUnlocked || !audio.paused){
+        return;
+    }
+
+    startBackgroundAudio();
+}
+
+document.addEventListener(
+    "pointerdown",
+    unlockBackgroundAudio,
+    {once:true, passive:true}
+);
+
+document.addEventListener(
+    "keydown",
+    unlockBackgroundAudio,
+    {once:true}
+);
 
 const playButton =
     document.getElementById("playButton");
